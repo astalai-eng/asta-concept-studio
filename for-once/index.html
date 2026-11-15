@@ -79,6 +79,24 @@ body{font-size:12px}#app{padding:30px 24px 64px}.lbl{font-size:10px}.lnk{font-si
 .dist{border:none;border-top:1px solid var(--line);border-radius:0;padding:28px 0 0;margin-top:46px}.dist b{font-size:25px}.dist p{font-size:11.5px}.plate{height:150px}button#go,button#sl,button#mk{font-size:10.5px}
 .sign{margin:6px 0 24px}.sign span{display:block;font:italic 500 17px 'Cormorant Garamond',Georgia,serif;color:var(--mute)}.sign input{width:100%;background:none;border:none;border-bottom:1px solid var(--line);outline:none;color:var(--ink);font:34px 'La Belle Aurore','Bradley Hand','Segoe Print',cursive;padding:4px 0 6px}
 button:focus-visible,.card:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+/* Immersive desktop table: let the experience occupy the whole studio stage */
+@media(min-width:760px){
+ body{display:block;align-items:initial;justify-content:initial;padding:0;background:#0e0e0d;overflow-x:hidden}
+ #app{width:100%;max-width:1120px;height:auto;min-height:100vh;overflow:visible;margin:0 auto;padding:64px clamp(32px,7vw,104px) 88px;border:0;border-radius:0;box-shadow:none;background:transparent}
+ .script{font-size:clamp(64px,7vw,92px);margin:0 0 10px}
+ .tag{font-size:24px}
+ .h2{font-size:clamp(38px,4vw,54px)!important;margin-top:46px!important}
+ .rowc{max-width:620px;margin:28px auto 0}
+ .pills{justify-content:center!important;gap:18px;margin:18px 0 28px}
+ .pill{font-size:20px;padding:10px 4px}
+ .occ{max-width:760px;margin:0 auto 14px!important;padding:28px 34px 34px;border-radius:2px}
+ .occ b{font-size:36px}
+ .occ small{font-size:11px}
+ .dist{max-width:760px;margin:52px auto 0;padding:30px 0 0}
+ .sec,.wl,.bot{max-width:760px;margin-left:auto;margin-right:auto}
+ .card{max-width:560px;margin:0 auto}
+}
+
 
 :root{--bg:#0e0e0d;--ink:#ece6d8;--mute:#a8a396;--paper:#ece7da;--line:#2a2926;--blue:#b8ccd6;--lm:#262522;--lh:#4a4944;--ll:#050504}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ebe6d9;--ink:#1b1a17;--mute:#6a655a;--paper:#ece7da;--line:#d2ccbc;--blue:#5d7a89;--lm:#dcd5c3;--lh:#fffdf6;--ll:#b5ac96}}
