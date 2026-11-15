@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Once</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400&family=Pinyon+Script&family=La+Belle+Aurore&display=swap" rel="stylesheet">
+
+<style>
+:root{--lm:#242428;--lh:#47474d;--ll:#050505;--bg:#0b0b0c;--ink:#efe9de;--mute:#aaa498;--paper:#ece7da;--line:#2e2e31;--blue:#aac4e6;--fg:#16181c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0c}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--lm:#d6ccb7;--lh:#fffefb;--ll:#aa9f86;--bg:#f5f1e9;--ink:#16181c;--mute:#5c5850;--paper:#ece7da;--line:#d8d1c2;--blue:#3f6296}}
+:root[data-theme="dark"]{--bg:#0b0b0c;--ink:#efe9de;--mute:#aaa498;--paper:#ece7da;--line:#2e2e31;--blue:#aac4e6}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,'Courier New',monospace;font-size:12px;display:flex;justify-content:center;overflow-x:hidden}
+#app{width:100%;max-width:420px;padding:28px 22px 60px;position:relative}
+.script{font-family:'Pinyon Script','Snell Roundhand','Apple Chancery','Segoe Script','Brush Script MT',cursive;font-size:58px;color:var(--blue);text-align:center;line-height:1.1;margin:14px 0 6px}
+.tag{text-align:center;color:var(--mute);font:italic 19px 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
+.lbl{letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:var(--mute)}
+.how{margin:22px 0 4px;border-top:1px solid var(--line)}.how p{margin:0;padding:11px 0;border-bottom:1px solid var(--line);color:var(--mute);line-height:1.5}.how b{color:var(--ink);font-weight:400;letter-spacing:.14em;text-transform:uppercase;font-size:10px;margin-right:8px}
+.pills{display:flex;gap:6px;margin:6px 0 16px;flex-wrap:wrap}
+.pill{background:none;border:1px solid var(--line);color:var(--mute);font:inherit;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:8px 12px;border-radius:99px;cursor:pointer}
+.pill.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.occ{display:block;width:100%;text-align:left;margin-bottom:-12px;padding:18px 20px 28px;background:var(--paper);color:var(--fg);border:1px solid rgba(0,0,0,.12);border-radius:4px;cursor:pointer;font:inherit;box-shadow:0 -8px 24px -16px rgba(0,0,0,.5)}
+.occ:nth-child(3n+2){background:#c9d9ec;margin-left:14px;width:calc(100% - 14px)}
+.occ:nth-child(3n){background:#e3e9f0}
+.occ b{font:italic 500 28px 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;display:block;margin:6px 0 3px}
+.occ small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}.occ .lbl{color:var(--fg);opacity:.7}
+.dist{margin-top:34px;padding:24px 22px;border:1px solid var(--blue);border-radius:4px}
+.dist b{font:italic 500 30px/1.1 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;display:block;margin:8px 0 10px}
+.dist p{margin:0 0 14px;color:var(--mute);line-height:1.6}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lnk{background:none;border:none;border-bottom:1px solid currentColor;color:var(--ink);font:inherit;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:8px 0;cursor:pointer}
+.lnk.dim{color:var(--mute)}
+.sec{margin-top:40px}
+.cap{border:1px solid var(--line);padding:12px 14px;margin-top:8px;display:flex;justify-content:space-between;color:var(--mute)}
+.candle{height:2px;background:var(--line);margin:14px 0 20px}.candle i{display:block;height:100%;background:var(--blue);box-shadow:0 0 10px var(--blue);transition:width 1s}
+.card{position:relative;background:var(--paper);color:var(--fg);border:1px solid rgba(0,0,0,.12);border-radius:3px;aspect-ratio:3/4.1;padding:28px 26px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden;box-shadow:0 28px 50px -30px rgba(0,0,0,.6)}
+.card .m{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.65}
+.q{font:italic 500 31px/1.17 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;text-align:center;filter:blur(12px);opacity:.3;transition:filter 1.4s ease,opacity 1.4s ease}
+.held .q,.done .q{filter:none;opacity:1}
+.veil{position:absolute;left:0;right:0;bottom:0;height:46%;background:rgba(150,180,220,.55);backdrop-filter:blur(3px);transition:transform 1.4s ease;display:flex;align-items:flex-end;justify-content:center;padding:18px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg)}
+.held .veil,.done .veil{transform:translateY(105%)}
+.field{width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);color:var(--ink);font:italic 22px 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;padding:8px 0;margin-bottom:14px;outline:none;border-radius:0}
+textarea.field{border:1px solid var(--line);padding:14px;min-height:120px;resize:none}
+select.field{font:12px 'IBM Plex Mono','SF Mono',ui-monospace,Menlo,'Courier New',monospace;background:var(--bg);border:1px solid var(--line);padding:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.two div{background:var(--paper);color:var(--fg);border:1px solid rgba(0,0,0,.1);padding:16px;font:italic 500 19px/1.25 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;min-height:130px;transition:filter 1.2s}
+.two div span{display:block;font:10px 'IBM Plex Mono','SF Mono',ui-monospace,Menlo,'Courier New',monospace;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:8px}
+.blur div{filter:blur(9px)}
+.seal{width:80px;height:80px;margin:18px auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c9d9ec,#5a7aa8);display:grid;place-items:center;font:36px 'Pinyon Script','Snell Roundhand','Apple Chancery','Segoe Script','Brush Script MT',cursive;color:#0b0b0c}
+img.out{width:100%;border-radius:3px;margin:10px 0}
+.note{color:var(--mute);line-height:1.6;margin:10px 0}
+.back{position:absolute;top:30px;left:22px}
+.h2{font:italic 500 34px/1.1 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;text-align:center;margin:36px 0 6px}
+@media(min-width:760px){body{align-items:center;padding:30px 0}#app{height:880px;overflow-y:auto;border:1px solid var(--line);border-radius:38px;box-shadow:0 40px 90px -30px rgba(0,0,0,.7)}}
+.fld{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);margin-bottom:14px}.fld span{font:10px 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);min-width:84px}.fld input{flex:1;min-width:0;background:none;border:none;outline:none;color:var(--ink);font:italic 500 25px 'Cormorant Garamond',Georgia,serif;padding:8px 0}
+.sheet{position:fixed;inset:0;z-index:9;background:var(--bg);overflow:auto;padding:26px 22px 60px;max-width:420px;margin:0 auto}
+.seal{background:none;border-radius:0;display:block;width:112px;height:112px;margin:18px auto;filter:drop-shadow(0 8px 18px rgba(90,122,168,.4))}
+.qt{font:italic 500 19px 'Cormorant Garamond',Georgia,serif;color:var(--mute);margin:8px 0}.card{-webkit-touch-callout:none}
+.plate{background:#e8e3d8;border:1px solid rgba(0,0,0,.08);border-radius:6px;height:230px;display:grid;place-items:center}
+body{font-size:13px}#app{padding:34px 26px 72px}.lbl{font-size:11px}.lnk{font-size:12px;padding:14px 0}.pill{font-size:11px;padding:10px 15px}
+.occ{padding:24px 22px 34px}.occ b{font-size:33px;margin:8px 0 5px}.occ small{font-size:11px}.script{font-size:66px}.tag{font-size:21px}
+.q{font-size:35px;line-height:1.16}.card{padding:32px 28px}.card .m,.veil{font-size:11px}.h2{font-size:40px}.note{font-size:13px;line-height:1.7}
+.fld span{font-size:11px;min-width:98px}.fld input{font-size:26px}select.field{font-size:16px}.dist{padding:28px 24px}.dist b{font-size:34px}.dist p{font-size:13px;line-height:1.7}
+.cap{padding:16px}.candle{height:3px}.two div{font-size:21px;padding:18px}.sec{margin-top:50px}
+button#go,button#sl,button#mk{display:block;width:100%;background:var(--ink);color:var(--bg);border:none;padding:18px;text-align:center;letter-spacing:.22em;border-radius:2px;margin-top:8px}
+.pills{gap:5px;flex-wrap:nowrap}.pill{padding:10px 12px;letter-spacing:.12em;font-size:10.5px;white-space:nowrap}
+.pills{gap:0}.pill{border:none;background:none;border-radius:0;padding:10px 4px;margin:0 10px;border-bottom:1px solid transparent;color:var(--mute)}.pill.on{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+button#go,button#sl,button#mk{display:block;width:auto;background:none;color:var(--ink);border:none;border-bottom:1px solid var(--ink);padding:14px 2px;letter-spacing:.2em;margin:12px 0 0;border-radius:0;text-align:left}
+.occ,.card{box-shadow:none}.occ{margin-bottom:10px}.occ:nth-child(3n+2){margin-left:0;width:100%}.dist{border-color:var(--line)}.plate{height:190px;border:none}.candle{height:2px}
+body{font-size:12px}#app{padding:30px 24px 64px}.lbl{font-size:10px}.lnk{font-size:11px;padding:12px 0}.pill{font-size:10px;padding:10px 4px}
+.script{font-size:54px}.tag{font-size:18px}.occ{padding:22px 22px 36px;margin-bottom:-14px;box-shadow:0 -10px 24px -14px rgba(0,0,0,.45)}.occ b{font-size:28px;margin:6px 0 4px}.occ small{font-size:10px}
+.occ.t0{background:#e3e9f0;margin-left:0;width:100%}.occ.t1{background:var(--paper);margin-left:0;width:100%}.occ.t2{background:#c9d9ec;margin-left:14px;width:calc(100% - 14px)}
+.q{font-size:30px}.card{padding:30px 26px;box-shadow:0 28px 50px -30px rgba(0,0,0,.6)}.card .m,.veil{font-size:10px}.h2{font-size:32px}.note{font-size:12px}
+.fld span{font-size:10px;min-width:92px}.fld input{font-size:22px}.dist b{font-size:28px}.dist p{font-size:12px}.two div{font-size:19px}button#go,button#sl,button#mk{font-size:11px}
+.plate{height:180px}
+#app{padding:30px 28px 70px}.script{font-size:46px}.tag{font-size:16px}.lbl{font-size:9.5px;letter-spacing:.16em}.lnk{font-size:10.5px;letter-spacing:.16em;padding:11px 0}.pill{font-size:9.5px}
+.occ{padding:18px 20px 30px;box-shadow:0 -8px 20px -14px rgba(0,0,0,.35)}.occ b{font-size:25px;font-weight:400;margin:4px 0 3px}.occ small{font-size:9.5px;opacity:.6;letter-spacing:.1em}
+.q{font-size:27px}.card{padding:28px 24px}.h2{font-size:28px}.fld span{font-size:9.5px}.fld input{font-size:20px}.note{font-size:11.5px}.sec{margin-top:34px}
+.dist{border:none;border-top:1px solid var(--line);border-radius:0;padding:28px 0 0;margin-top:46px}.dist b{font-size:25px}.dist p{font-size:11.5px}.plate{height:150px}button#go,button#sl,button#mk{font-size:10.5px}
+.sign{margin:6px 0 24px}.sign span{display:block;font:italic 500 17px 'Cormorant Garamond',Georgia,serif;color:var(--mute)}.sign input{width:100%;background:none;border:none;border-bottom:1px solid var(--line);outline:none;color:var(--ink);font:34px 'La Belle Aurore','Bradley Hand','Segoe Print',cursive;padding:4px 0 6px}
+button:focus-visible,.card:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--blue);outline-offset:3px}@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+
+:root{--bg:#0e0e0d;--ink:#ece6d8;--mute:#a8a396;--paper:#ece7da;--line:#2a2926;--blue:#b8ccd6;--lm:#262522;--lh:#4a4944;--ll:#050504}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ebe6d9;--ink:#1b1a17;--mute:#6a655a;--paper:#ece7da;--line:#d2ccbc;--blue:#5d7a89;--lm:#dcd5c3;--lh:#fffdf6;--ll:#b5ac96}}
+.script{color:var(--ink)}
+.lbl,.card .m,.fld span,.occ small,.occ .lbl{text-transform:none;letter-spacing:.03em;font-size:11px}
+.lnk{font:italic 500 18px 'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:.01em;word-spacing:.06em;padding:9px 0}
+.pill{font:italic 500 18px 'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:.01em;word-spacing:.05em;padding:8px 2px;margin:0 9px}
+.note{font:italic 400 17px/1.45 'Cormorant Garamond',Georgia,serif;letter-spacing:.005em;word-spacing:.05em;color:var(--mute)}
+.veil{font:italic 500 18px 'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:.01em}
+button#go,button#sl,button#mk{font:italic 500 20px 'Cormorant Garamond',Georgia,serif;text-transform:none;letter-spacing:.01em}
+.occ{position:relative;border:1px solid rgba(0,0,0,.06)}.occ.t0{background:#f2eee3}.occ.t1{background:#bccdd7}.occ.t2{background:#d6d1c2}.occ small{opacity:.7}
+.cardw{position:relative}.clipw{position:absolute;top:-16px;right:26px;z-index:4;transform:rotate(8deg);pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.28))}.clip{width:20px;height:42px;display:block}.occ .clipw{top:-15px;right:24px}
+.sign span{font-size:18px}.k{letter-spacing:.04em}
+
+:root{--bg:#0e0e0d;--ink:#e9e4d6;--mute:#9d988b;--paper:#ece7da;--line:#2b2a27;--blue:#b8ccd6;--lm:#262522;--lh:#4a4944;--ll:#050504}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#0e0e0d;--ink:#e9e4d6;--mute:#9d988b;--paper:#ece7da;--line:#2b2a27;--blue:#b8ccd6;--lm:#262522;--lh:#4a4944;--ll:#050504}}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .2 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.07;z-index:0}#app{position:relative;z-index:1}
+.occ::before,.card::before,.bcard::before,.pal::before,.emb::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .2 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.5;mix-blend-mode:multiply;pointer-events:none}
+.occ,.card,.two div,.dist,.cap,textarea.field,select.field,.bcard,.pal,.emb{border-radius:0}
+.occ{box-shadow:0 -5px 10px -8px rgba(0,0,0,.8),0 1px 0 rgba(0,0,0,.4);border:none}.occ.t0{background:#ece7da;transform:rotate(-.35deg)}.occ.t1{background:#b8ccd6;transform:rotate(.3deg)}.occ.t2{background:#cfcab9;transform:rotate(-.2deg)}
+.occ b{font-weight:400;font-size:24px}.q{font-weight:400;font-size:27px}.card{box-shadow:0 1px 0 rgba(0,0,0,.5),0 16px 22px -18px #000;border:none}
+.bcard{position:relative;background:#ece7da;color:#1b1a17;padding:20px 22px 18px;margin:8px 0 38px;transform:rotate(-1.2deg);box-shadow:0 1px 0 rgba(0,0,0,.5),0 16px 22px -16px #000}
+.bt,.bf{display:flex;justify-content:space-between;align-items:center;font:10.5px 'IBM Plex Mono',monospace;color:#1b1a17;opacity:.75;position:relative}
+.bn{font:64px/1.1 'Pinyon Script',cursive;text-align:center;margin:22px 0 0;position:relative}.bs{font:italic 400 17px 'Cormorant Garamond',Georgia,serif;text-align:center;opacity:.8;margin:2px 0 0;position:relative}.bf{margin-top:22px}
+.mono{width:32px;height:32px;border:1px solid #1b1a17;border-radius:50%;display:grid;place-items:center}
+.emb{position:absolute;right:-8px;bottom:-30px;width:78px;height:78px;background:#e6e1d3;display:grid;place-items:center;transform:rotate(6deg);box-shadow:0 1px 0 rgba(0,0,0,.4),0 10px 14px -10px #000}
+.pal{position:relative;background:#ece7da;color:#1b1a17;padding:18px 20px;margin:48px 0 0;transform:rotate(.7deg);box-shadow:0 1px 0 rgba(0,0,0,.5),0 14px 20px -16px #000}
+.pt{font:10.5px 'IBM Plex Mono',monospace;margin-bottom:12px;opacity:.75;position:relative}.prw{display:flex;gap:18px;position:relative}.prw div{text-align:center;font:10.5px 'IBM Plex Mono',monospace}.prw i{display:block;width:38px;height:38px;border-radius:50%;margin:0 auto 6px;border:1px solid rgba(0,0,0,.2)}.pf{font:italic 17px 'Cormorant Garamond',Georgia,serif;margin-top:12px;opacity:.7;position:relative}
+.dist{border-top:1px solid var(--line)}
+.printer{position:relative;margin:12px 0 4px}.slot{height:9px;background:#050504;box-shadow:0 1px 0 #2b2a27;position:relative;z-index:3}
+.pw{position:relative;overflow:hidden}.pr{clip-path:inset(0 0 100% 0);display:block;width:100%;margin:0!important;border-radius:0!important}.pr.go{animation:rev 6s steps(60,end) forwards,ink 7s linear forwards}
+@keyframes rev{to{clip-path:inset(0 0 0 0)}}@keyframes ink{from{filter:contrast(.78) brightness(1.12)}to{filter:none}}
+.head{position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(#050504,rgba(5,5,4,0));opacity:0;z-index:2}.head.go{opacity:1;animation:hd 6s steps(60,end) forwards,hdo .01s 6s forwards}
+@keyframes hd{to{top:calc(100% - 5px)}}@keyframes hdo{to{opacity:0}}
+.pw::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(rgba(0,0,0,.1) 0 1px,transparent 1px 3px);animation:sc 8s forwards}@keyframes sc{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.pr{clip-path:none}.pr.go{animation:none}.head,.pw::after{display:none}}
+
+:root{--bg:#171616;--ink:#ecebe6;--mute:#a4a6a9;--paper:#ece7da;--line:#47494c;--blue:#b9cddb;--lm:#303133;--lh:#4b4c4f;--ll:#1b1c1d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171616;--ink:#ecebe6;--mute:#a4a6a9;--paper:#ece7da;--line:#47494c;--blue:#b9cddb;--lm:#303133;--lh:#4b4c4f;--ll:#1b1c1d}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#dcdad4;--ink:#1c1d1f;--mute:#5b5d60;--paper:#ece7da;--line:#bdbbb4;--blue:#6f8da1;--lm:#d3d1ca;--lh:#f7f6f2;--ll:#aaa8a0}body::before{mix-blend-mode:multiply;opacity:.1}}
+body::before{opacity:.06}
+.bcard{background:#f1f0eb}.emb{background:#e9e8e2}
+.occ::before{content:none!important}
+.occ{display:block;width:100%;border:none;border-radius:0;text-align:left;cursor:pointer;position:relative;color:#1c1d1f;font:inherit;padding:0;margin:0 0 -12px;background:none;transform:none;box-shadow:none}
+.cert::after,.env::after,.pola::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .3 0 0 0 0 .26 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.4;mix-blend-mode:multiply;pointer-events:none}
+.cert{background:#f1f0eb;padding:20px 22px 14px;transform:rotate(-.6deg);box-shadow:0 1px 1px rgba(0,0,0,.25),0 14px 18px -12px rgba(0,0,0,.5)}
+.ck{display:block;font:10px 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.cert b{display:block;font:300 24px/1.15 Jost,'Helvetica Neue',Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:5px 0 10px}
+.cd{display:block;font:10.5px/1.55 'IBM Plex Mono',monospace;max-width:82%;opacity:.8;margin-bottom:14px}
+.cr{display:flex;justify-content:space-between;font:9.5px 'IBM Plex Mono',monospace;border-bottom:1px solid rgba(0,0,0,.3);padding:7px 0 5px;text-transform:uppercase;letter-spacing:.04em}.cr i{font-style:normal;opacity:.7}.cr em{font-style:normal}
+.env{background:#b9cddb;aspect-ratio:1.9/1;margin-top:18px;transform:rotate(.8deg);overflow:hidden;box-shadow:0 1px 1px rgba(0,0,0,.25),0 14px 18px -12px rgba(0,0,0,.5)}
+.env .flap{position:absolute;inset:0;width:100%;height:100%}.env .flap path{fill:none;stroke:rgba(255,255,255,.55);stroke-width:1;vector-effect:non-scaling-stroke}.env .flap path:first-child{fill:rgba(255,255,255,.1)}
+.env .emb2{position:absolute;left:50%;top:27%;transform:translateX(-50%);line-height:0}
+.env .ek{position:absolute;top:12px;left:20px;font:10px 'IBM Plex Mono',monospace;opacity:.7}
+.env b{position:absolute;left:20px;bottom:34px;font:300 20px/1.1 Jost,'Helvetica Neue',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.env small{position:absolute;left:20px;bottom:15px;font:10px 'IBM Plex Mono',monospace;opacity:.75}
+.pola{background:#f3f2ee;padding:10px 10px 0;width:72%;margin:18px 0 -8px auto;transform:rotate(1.4deg);box-shadow:0 1px 1px rgba(0,0,0,.25),0 14px 18px -12px rgba(0,0,0,.5)}.pola.pl{margin:18px auto -8px 0;transform:rotate(-1.6deg)}
+.pic{display:block;aspect-ratio:1/1;position:relative;background:radial-gradient(90% 80% at 28% 22%,#d6e0e7,#9fb2c0 55%,#6c8091);box-shadow:inset 0 0 36px rgba(0,0,0,.28)}
+.pic i{position:absolute;top:10px;left:12px;font:normal 9.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.9)}.pic small{position:absolute;left:12px;right:12px;bottom:12px;font:10px/1.45 'IBM Plex Mono',monospace;color:rgba(255,255,255,.92)}
+.pola{margin-bottom:12px!important}.pcp{display:block;font:28px/1.15 'La Belle Aurore','Bradley Hand',cursive;color:#1f2f52;padding:12px 4px 16px;transform:rotate(-1deg)}
+
+.bcard{padding:34px 24px 26px;margin:8px 0 30px;transform:none;text-align:center;box-shadow:0 1px 1px rgba(0,0,0,.2),0 16px 22px -16px rgba(0,0,0,.55)}
+.bh{display:grid;place-items:center;line-height:0}.bcard .bn{margin:14px 0 0;font:62px/1.1 'Pinyon Script',cursive}.bcard .bs{font:italic 400 18px 'Cormorant Garamond',Georgia,serif;margin:2px 0 0;opacity:.8}
+.bl2{width:26px;height:1px;background:rgba(28,29,31,.35);margin:18px auto 12px}.bm{font:10.5px 'IBM Plex Mono',monospace;opacity:.6;position:relative}
+.env{aspect-ratio:1.85/1}.env .ek{position:absolute;top:14px;left:20px;font:10px 'IBM Plex Mono',monospace;opacity:.65}
+.env .pm{position:absolute;top:8px;right:46px;width:112px;height:56px;color:rgba(28,29,31,.45);transform:rotate(-6deg)}
+.env .stamp{position:absolute;top:14px;right:18px;width:42px;height:52px;background:#f1f0eb;display:grid;place-items:center;transform:rotate(2deg);box-shadow:0 1px 1px rgba(0,0,0,.2);line-height:0}
+.env .stamp::before{content:"";position:absolute;inset:-1px;border:4px dotted #b9cddb;pointer-events:none}
+.env .adr{position:absolute;left:20px;bottom:44px;display:flex;align-items:baseline;gap:10px;right:20px}.env .adr i{font:italic 15px 'Cormorant Garamond',Georgia,serif;opacity:.6}
+.env .adr b{position:static;font:italic 400 27px/1.05 'Cormorant Garamond',Georgia,serif;letter-spacing:.005em;text-transform:none}
+.env small{left:20px;bottom:18px}
+.sign input{line-height:1.7;padding:12px 0 14px;height:auto;overflow:visible}.fld span{min-width:60px}
+.rp{margin:12px 0 4px}.pbody{background:#1f2022;height:46px;border-radius:0 0 12px 12px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font:10.5px 'IBM Plex Mono',monospace;color:#9a9ca0;position:relative;z-index:4;box-shadow:inset 0 -2px 0 #111}
+.led{width:7px;height:7px;border-radius:50%;background:#7ee2a8;box-shadow:0 0 6px #7ee2a8;display:inline-block;margin-right:8px;animation:blink .5s steps(2) 7}@keyframes blink{50%{opacity:.25}}
+.slotw{height:9px;background:#0a0a0b;position:relative;z-index:4;box-shadow:0 -2px 0 rgba(255,255,255,.06)}
+.feed{position:relative;overflow:hidden}.feed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(transparent,rgba(0,0,0,.5));z-index:3;pointer-events:none}
+.feed img.rimg{display:block;width:100%;margin:0;border-radius:0;transform:translateY(101%)}
+.feed img.rimg.go{animation:feedout 3.6s steps(48,end) forwards,ink 4s linear forwards,tear .5s ease-out 3.6s forwards}
+@keyframes feedout{to{transform:translateY(0)}}@keyframes tear{0%{transform:translateY(0)}40%{transform:translateY(-7px) rotate(.5deg)}100%{transform:translateY(-3px) rotate(.3deg)}}
+@media (prefers-reduced-motion:reduce){.feed img.rimg{transform:none}.feed img.rimg.go{animation:none}.led{animation:none}}
+.pn{font:italic 22px 'Cormorant Garamond',Georgia,serif;margin:0 12px}.code{font:400 52px 'IBM Plex Mono',monospace;letter-spacing:.2em;text-align:center;margin:8px 0 4px;padding-left:.2em}.rmc{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 0 4px;margin:8px 0 16px}
+.wl{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}.wl b{display:block;font:italic 400 25px 'Cormorant Garamond',Georgia,serif;margin-bottom:6px}.wl p{margin:0 0 14px;font:italic 400 17px/1.45 'Cormorant Garamond',Georgia,serif;color:var(--mute)}
+.occ.cert{background:#f1f0eb;margin-left:0;width:100%}.occ.env{background:#b9cddb;margin-left:0;width:100%}.occ.pola{background:#f3f2ee;width:72%}.occ.pola:not(.pl){margin-left:auto}.occ.pola.pl{margin-left:0}
+
+:root{--bg:#171616;--ink:#ece7da;--mute:#a19d96;--paper:#ece7da;--line:#353332;--blue:#c0574a;--lm:#1d1c1c;--lh:#3a3837;--ll:#0c0b0b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171616;--ink:#ece7da;--mute:#a19d96;--paper:#ece7da;--line:#353332;--blue:#c0574a;--lm:#1d1c1c;--lh:#3a3837;--ll:#0c0b0b}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#d3d0c9;--ink:#1a1919;--mute:#5d5a55;--paper:#ece7da;--line:#b9b5ad;--blue:#5b232b;--lm:#cdc9c1;--lh:#ece9e3;--ll:#aeaaa1}body::before{mix-blend-mode:multiply;opacity:.1}}
+body{font-family:'Courier Prime','IBM Plex Mono',monospace}
+body .lnk,body .pill{font:300 11px/1.2 Poppins,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;word-spacing:0;padding:11px 0;border-bottom:1px solid currentColor}
+body .pill{border-bottom:1px solid transparent;margin:0 9px;padding:9px 2px;color:var(--mute)}body .pill.on{border-bottom-color:var(--ink);color:var(--ink);background:none}
+button#go,button#sl,button#mk{font:400 11.5px/1.2 Poppins,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+#app .lbl,.fld span,.card .m,.ck{font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+.bcard{background:var(--paper);color:#1a1919;padding:22px 20px 26px;margin:8px 0 26px;text-align:center;transform:none;box-shadow:0 1px 1px rgba(0,0,0,.25),0 18px 24px -16px rgba(0,0,0,.6)}
+.bcard .bt{display:flex;justify-content:space-between;text-align:left;font:10px/1.55 'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.08em;opacity:.8;position:relative}
+.bcard .bh{margin:30px 0 12px;line-height:0}.bcard .bn{font:300 34px/1.1 'Cormorant Garamond',Georgia,serif;letter-spacing:.32em;padding-left:.32em;margin:0}
+.bcard .bs{font:10px 'Courier Prime',monospace;letter-spacing:.16em;text-transform:uppercase;margin-top:14px;opacity:.6}
+.occ::before{content:none!important}
+.occ.fold,.occ.lh,.occ.nt{margin-left:0;box-shadow:0 1px 1px rgba(0,0,0,.3),0 14px 18px -12px rgba(0,0,0,.6)}
+.occ.fold{background:#4d1b22;color:#ead9d6;width:100%;aspect-ratio:1.75/1;transform:rotate(-.5deg);margin-bottom:-10px}
+.fold .em{position:absolute;left:20px;top:18px;line-height:0}.fold .ft{position:absolute;right:20px;top:20px;font:10px/1.55 'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.08em;text-align:right;opacity:.7}
+.fold b{position:absolute;left:20px;bottom:40px;font:300 22px/1.1 'Cormorant Garamond',Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:#f3e6e3}.fold small{position:absolute;left:20px;bottom:17px;font:10.5px 'Courier Prime',monospace;opacity:.75}
+.occ.lh{background:#ece7da;color:#1a1919;width:100%;aspect-ratio:1.6/1;overflow:hidden;transform:rotate(.5deg);padding:20px 20px 0;margin-top:14px;margin-bottom:-10px}
+.lh .lt{display:flex;justify-content:space-between;font:10px/1.5 'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.08em;opacity:.7;position:relative}
+.lh b{display:block;margin-top:34px;font:300 25px/1.15 'Cormorant Garamond',Georgia,serif;letter-spacing:.16em;text-transform:uppercase;position:relative}
+.lh .hr2,.nt .hr2{display:block;width:26px;height:1px;background:currentColor;opacity:.5;margin:16px 0 10px;position:relative}.lh small{display:block;font:10.5px/1.55 'Courier Prime',monospace;opacity:.75;max-width:70%;position:relative}
+.lh .wm{position:absolute;right:-34px;bottom:-46px;opacity:.09;line-height:0}
+.occ.nt{background:#dedbd3;color:#1a1919;width:72%;padding:18px 18px 16px;margin:14px 0 -6px auto;transform:rotate(-1deg)}.occ.nt.nr{margin:14px auto -6px 0;transform:rotate(1deg)}
+.nt b{display:block;font:300 18px/1.25 'Cormorant Garamond',Georgia,serif;letter-spacing:.14em;text-transform:uppercase;position:relative}.nt small{display:block;font:10.5px/1.7 'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.06em;position:relative}
+.fold::after,.lh::after,.nt::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .3 0 0 0 0 .26 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.4;mix-blend-mode:multiply;pointer-events:none}.fold::after{mix-blend-mode:screen;opacity:.1}
+.card{background:var(--paper);color:#1a1919}.card .q{filter:none;opacity:1;transition:none;font:italic 400 28px/1.15 'Cormorant Garamond',Georgia,serif;text-align:center}
+.qw{position:relative}.qw .qs{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease .25s}.qw .qb{filter:url(#mb);opacity:.9;transition:opacity 1.1s ease}
+.held .qs,.done .qs{opacity:1}.held .qb,.done .qb{opacity:0}
+.hint{text-align:center;font:10px 'Courier Prime',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.55;transition:opacity .6s}.held .hint,.done .hint{opacity:0}
+.cm{position:absolute;width:13px;height:13px;border:0 solid rgba(26,25,25,.5);pointer-events:none}.c1{top:12px;left:12px;border-top-width:1px;border-left-width:1px}.c2{top:12px;right:12px;border-top-width:1px;border-right-width:1px}.c3{bottom:12px;left:12px;border-bottom-width:1px;border-left-width:1px}.c4{bottom:12px;right:12px;border-bottom-width:1px;border-right-width:1px}
+.card .m{margin:6px 6px 0}
+.rmc .code{font:300 54px 'Cormorant Garamond',Georgia,serif;letter-spacing:.3em}
+
+body{font-family:'IBM Plex Mono',monospace}
+body .lnk,body .pill{font:italic 500 18px/1.2 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;text-transform:none;padding:9px 0}
+body .pill{margin:0 9px;padding:8px 2px}
+button#go,button#sl,button#mk{font:italic 500 20px/1.2 'Cormorant Garamond',Georgia,serif;letter-spacing:.01em;text-transform:none}
+#app .lbl,.fld span,.card .m,.ck{font-family:'IBM Plex Mono',monospace;text-transform:none;letter-spacing:.03em;font-size:11px}
+.hint{font:11px 'IBM Plex Mono',monospace;letter-spacing:.04em;text-transform:none}
+.bcard{padding:34px 24px 26px;text-align:center}.bcard .bh{margin:0;line-height:0}
+.bcard .bn{font:62px/1.1 'Pinyon Script',cursive;letter-spacing:0;padding:0;margin:12px 0 0;color:#1a1919}
+.bcard .bs{font:italic 400 18px/1.3 'Cormorant Garamond',Georgia,serif;letter-spacing:0;text-transform:none;opacity:.8;margin:2px 0 0}
+.bcard .bl2{display:block;width:26px;height:1px;background:rgba(28,29,31,.35);margin:18px auto 12px}.bcard .bm{display:block;font:10.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;text-transform:none;opacity:.6}
+.occ.fold,.occ.lh,.occ.nt{display:flex;flex-direction:column;justify-content:space-between;width:100%;min-height:184px;aspect-ratio:auto;padding:20px;margin:0 0 -8px;text-align:left;overflow:hidden;transform:rotate(-.4deg)}
+.occ.lh{transform:rotate(.4deg)}.occ.nt{background:#dad7ce;color:#1a1919;transform:rotate(-.3deg)}.occ.nt.nr{margin:0 0 -8px}
+.occ .tp{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.occ .tp .tx,.occ .tp .tl{font:10.5px/1.55 'IBM Plex Mono',monospace;text-transform:none;letter-spacing:.02em;opacity:.7;position:static}.occ .tp .tx{text-align:right}
+.occ .bt2{display:block;position:relative}
+.occ .bt2 b{display:block;font:italic 400 27px/1.1 'Cormorant Garamond',Georgia,serif;letter-spacing:0;text-transform:none;position:static;color:inherit}
+.occ .bt2 small{display:block;font:11px/1.5 'IBM Plex Mono',monospace;opacity:.75;margin-top:6px;position:static;max-width:85%}
+.occ .bt2 .hr2{display:block;width:26px;height:1px;background:currentColor;opacity:.45;margin:10px 0 0}
+.fold .em{line-height:0;position:static}.occ.lh .wm{position:absolute;right:-30px;bottom:-40px;opacity:.09;line-height:0}
+.fold b{color:#f3e6e3}
+.nt small{text-transform:none;letter-spacing:.02em}
+.occ .tp .tx,.occ .tp .tl{font-size:11px;opacity:.85}.occ .bt2 small{font-size:11.5px;opacity:.88}.hint{opacity:.8}.fold .tx,.fold small{opacity:.9}
+.bcard{padding:20px 20px 16px;margin:6px 0 18px;box-shadow:0 1px 1px rgba(0,0,0,.18),0 8px 14px -10px rgba(0,0,0,.45)}
+.bcard .bn{font-size:44px;margin:6px 0 0;color:#4d1b22}.bcard .bs{font-size:16px}.bcard .bl2{margin:10px auto 8px}.bcard .bm{font-size:10px}
+.rowc{display:flex;justify-content:space-between;align-items:center;margin:-4px 0 2px}
+select.inl{flex:1;min-width:0;background:none;border:none;color:var(--ink);font:italic 500 22px 'Cormorant Garamond',Georgia,serif;padding:8px 0;outline:none}select.inl option{color:#1a1919;background:#efede7}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);max-width:380px;width:calc(100% - 28px);background:#4d1b22;color:#ecd9d6;padding:14px 16px;z-index:20;font:italic 500 17px/1.3 'Cormorant Garamond',Georgia,serif;box-shadow:0 10px 24px -8px rgba(0,0,0,.6);cursor:pointer}
+.pcard{background:var(--paper);color:#1a1919;padding:22px;text-align:center;margin:46px 0 8px;box-shadow:0 1px 1px rgba(0,0,0,.2),0 14px 18px -12px rgba(0,0,0,.5)}
+.pav{width:68px;height:68px;border-radius:50%;background:#4d1b22;color:#ead9d6;font:38px/1 'La Belle Aurore','Bradley Hand',cursive;display:grid;place-items:center;margin:0 auto 8px}
+.pn2{font:italic 500 28px 'Cormorant Garamond',Georgia,serif}.pc{font:11px/1.7 'IBM Plex Mono',monospace;opacity:.75}
+.frow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.frow b{display:block;font:italic 500 22px 'Cormorant Garamond',Georgia,serif}.frow small{font:11px 'IBM Plex Mono',monospace;color:var(--mute)}
+
+:root{--wm:#ece7da}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--wm:#ece7da}}@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--wm:#4d1b22}}
+.bann{text-align:center;padding:14px 0 6px;margin:0 0 12px}.bh2{line-height:0}
+.bn2{font:56px/1.1 'Pinyon Script',cursive;color:var(--wm);margin:12px 0 0}.bs2{font:italic 400 20px/1.3 'Cormorant Garamond',Georgia,serif;color:var(--ink);opacity:.88;margin-top:2px}
+.bl3{width:22px;height:1px;background:var(--ink);opacity:.35;margin:16px auto 10px}.bm2{font:10.5px 'IBM Plex Mono',monospace;color:var(--mute)}
+.bot{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bann{padding:30px 0 10px;margin:0 0 10px}.bn2{font-size:60px}.bs2{font-size:21px;margin-top:4px}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="mb" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="16 1.2"/></filter></svg><div id="app"></div>
+<script>
+try{["ps_cap","fo_seen_q","fo_seen"].forEach(k=>localStorage.removeItem(k))}catch(e){}
+const FILE=location.protocol==='file:';const A=document.getElementById("app"),FL=["Surface","Interior","Core"];
+const O=[
+{n:"01",t:"The Third Date",s:"Somewhere between curious and certain.",q:[[0,"What's a hill you'll die on that nobody has ever asked you about?"],[0,"Name the song that would out you as a teenager."],[1,"Which of your flaws do people only discover in month three?"],[1,"What do you pretend not to want yet?"],[2,"What's the story you tell on first dates, and what's the real one underneath it?"],[2,"What do you want a partner to understand about how you love?"]]},
+{n:"02",t:"Old Friends, New Silence",s:"For the friend you still think of.",q:[[0,"When did we last talk about something that mattered? Say the actual date."],[0,"What do you wish I asked you more often?"],[1,"Which of my wins quietly made you feel behind?"],[1,"What did you never forgive me for, and did you ever say it out loud?"],[2,"If we only had five more years of friendship, what would we stop wasting?"],[2,"What have you been performing around me?"]]},
+{n:"03",t:"Family Dinner",s:"The table you grew up around.",q:[[0,"Which family story gets told differently by every person at this table?"],[0,"Which dish does nobody make right anymore?"],[1,"What did you decide at twelve that you'd never become?"],[1,"What do we never say at this table?"],[2,"Who in this family are you secretly afraid of turning into?"],[2,"What did you need to hear from me at seventeen?"]]},
+{n:"04",t:"3AM, Kitchen Floor",s:"For the person you'd call at this hour.",q:[[0,"What tab has been open in your head for a month?"],[0,"Which lie have you told so often it feels true?"],[1,"What are you grieving that nobody died of?"],[1,"Whose name do you still draft texts to?"],[2,"What would you do tomorrow if nobody would ever find out?"],[2,"What are you waiting for permission to want?"]]},
+{n:"05",t:"Date Night, Year Five",s:"Still learning each other.",q:[[0,"What's something I do that you've never told me you love?"],[0,"What do you still google about us in your head?"],[1,"What did you stop asking for, and when?"],[1,"Which version of me do you miss?"],[2,"What are you afraid we'll never do?"],[2,"What would you want me to know if tonight was the last ordinary one?"]]},
+{n:"06",t:"Long Distance, Together",s:"Same candle, different cities.",q:[[0,"Describe your Tuesday so precisely that I'm there."],[0,"What does missing me look like in your day?"],[1,"What fear haven't you told me because I'm far away?"],[1,"When did the distance feel hardest, and did I notice?"],[2,"What do you need to hear to feel safe waiting?"],[2,"Describe us in a kitchen, in a city, one year from tonight."]]},
+{n:"07",t:"Strangers at the Table",s:"A table of almost-friends.",q:[[0,"What did you want to be at nine, specifically?"],[0,"What is your most unreasonable standard?"],[1,"What decision are you still not sure you got right?"],[1,"When did you last cry in public, and what did it?"],[2,"What do you think we're all too polite to say tonight?"],[2,"What question do you wish someone would ask you tonight?"]]}];
+const CHK=["What was the best part of your day that I missed?","What does the light look like where you are right now?","What's something small you've started doing that I don't know about yet?","What did you almost tell me this week and didn't?","What would you show me if I walked through your door?","Who have you become since we last stood in the same room?","What do you miss that you didn't expect to?","What do you want us to do in the first hour we're together?","What are you editing out of our calls?"];
+let S={fl:-1,occ:null,deck:[],i:0,n:0,mode:"s",tg:null,people:2},t,CAP=[];
+try{CAP=JSON.parse(localStorage.getItem("ps_cap")||"[]")}catch(e){}
+const e64=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))),d64=s=>JSON.parse(decodeURIComponent(escape(atob(s))));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const link=(k,o)=>location.href.split("#")[0]+"#"+k+"="+e64(o),$=id=>document.getElementById(id);
+const cp=async(id,u)=>{try{await navigator.clipboard.writeText(u);$(id).textContent="Copied"}catch(e){$(id).textContent="Select and copy"}};
+function holdable(){const cd=$("cd");cd.oncontextmenu=e=>e.preventDefault();cd.tabIndex=0;cd.setAttribute("role","button");cd.setAttribute("aria-label","Hold to open this question, or press Enter");cd.onkeydown=e=>{if(e.key=="Enter"||e.key==" "){e.preventDefault();openCard()}};cd.onpointerdown=()=>{cd.classList.add("held");t=setTimeout(()=>{cd.classList.add("done");onOpen();},1400)};
+ ["pointerup","pointerleave","pointercancel"].forEach(v=>cd["on"+v]=()=>{clearTimeout(t);if(!cd.classList.contains("done"))cd.classList.remove("held")})}
+function home(){roomLeave();const LL=lettersList();
+ A.innerHTML=`${hero()}<div class="rowc"><button class="lnk dim" id="jn">Have a code? Join a table</button><button class="lnk dim" id="pf">${ME.id?esc((ME.name||"Me").split(" ")[0]):"Log in"}</button></div>
+  <div class="h2" style="font-size:22px;margin-top:30px">Who's at your table?</div>
+ <div class="pills" id="pl" style="justify-content:center">${["All floors",...FL].map((f,k)=>`<button class="pill ${S.fl==k-1?"on":""}" data-k="${k-1}">${f}</button>`).join("")}</div>
+ 
+ ${O.map((o,k)=>obj(o,k)).join("")}
+ <div class="dist"><span class="lbl">Not at the same table?</span><b>I'd like to ask you something</b><p>For the friend across town, the partner in another time zone, the sibling you only see on screens. Send one question. They answer, and ask you one back.</p><button class="lnk" id="ask">Send a question</button></div>
+ <div class="sec">${LL.length?`<span class="lbl">Your letters</span>`:""}
+ ${LL.map((c,ci)=>`<div class="cap" data-i="${ci}" style="cursor:pointer"><span>${esc(c.t)}</span><span>${c.o.u>Date.now()?"opens "+new Date(c.o.u).toLocaleDateString():"open"}</span></div>`).join("")}
+ <div class="wl"><b>The deck, in your hands.</b><p>Printed decks, personalised birthday gifts and a small merch drop are on their way. Be first to know.</p><div class="fld"><span>email</span><input id="wle" type="email" autocomplete="email" placeholder="you@example.com"></div><button class="lnk" id="wlb">Join the waitlist</button><p class="note" id="wls"></p></div>
+ <div class="bot"><button class="lnk dim" id="wk">${WK?"Sunday question: on":"Remind me with a question every Sunday"}</button><button class="lnk dim" id="iv">Invite someone to your table</button><button class="lnk dim" id="hw">How it works</button></div></div>`;
+ $("pl").onclick=e=>{if(e.target.dataset.k!=null){S.fl=+e.target.dataset.k;home()}};
+ A.querySelectorAll(".occ").forEach(b=>b.onclick=()=>start(+b.dataset.o));$("ask").onclick=()=>ask({});$("hw").onclick=intro;$("wk").onclick=()=>{WK=!WK;try{localStorage.setItem("fo_weekly",WK?"1":"0")}catch(e){}toast(WK?"Done. Every Sunday at 6pm you will get a question. (Browsers can't show it in this demo; the phone app does.)":"Sunday questions are off.");home()};$("iv").onclick=async()=>{const t="Come sit at my table. For Once is a card game of real questions for dinners, dates and long calls.",u=location.href.split("#")[0];try{if(navigator.share){await navigator.share({title:"For Once",text:t,url:u});return}}catch(e){if(e&&e.name==="AbortError")return}try{await navigator.clipboard.writeText(t+" "+u);toast("Invite copied.")}catch(e){toast("Copy this link: "+u)}};$("jn").onclick=joinTable;$("wlb").onclick=waitlist;A.querySelectorAll(".cap").forEach(c=>c.onclick=()=>openLetter(LL[+c.dataset.i]));$("pf").onclick=ME.id?()=>profile():phoneScreen}
+function play(){const c=S.deck[S.i],o=S.occ;if(RS&&RS.role=="host"&&RP){RS.opened=false;RS.revealed=false;RP.presence({q:null,reveal:0,ans:null,ansRid:null,done:null})}
+ A.innerHTML=`<button class="lnk dim back" id="bk">← Home</button><div class="h2" style="font-size:26px;margin:58px 0 4px">${o.t}</div>
+ <div class="pills" id="mdp" style="justify-content:flex-start;margin:6px 0 4px">${[["s","Out loud"],["t","Pass the phone"],["r","Own phones"]].map(a=>`<button class="pill ${S.mode==a[0]?"on":""}" data-m="${a[0]}">${a[1]}</button>`).join("")}</div>${S.mode=="t"?`<div class="row" style="margin:2px 0 8px"><span class="lbl">people at the table</span><span><button class="lnk dim" id="pm">−</button><span class="pn">${S.people}</span><button class="lnk dim" id="pp">+</button></span></div>`:""}${S.mode=="r"?`<div id="rm"></div>`:""}
+ <div class="candle"><i style="width:${100-S.n*20}%"></i></div>
+ <div class="cardw"><div class="card" id="cd"><div class="m"><span>${FL[c[0]]}</span><span>${S.i+1} / ${S.deck.length}</span></div>${qhtml(esc(c[1]))}</div></div>
+ ${S.i==0?`<p class="note" style="text-align:center;margin:12px 0 0">You can pass on any card. That's allowed.</p>`:""}<div class="row" style="margin-top:6px"><button class="lnk dim" id="ps">Not this one</button><button class="lnk dim" id="ot">Tap to open</button></div><div id="tg"></div><div id="shr" style="margin-top:6px"></div>
+ <div class="row" style="margin-top:18px"><span class="lbl">${S.deck.length-S.n} left to burn</span><button class="lnk" id="nx">${S.n==S.deck.length-1?"Blow out the candle":"Turn the card"}</button></div>`;
+ holdable();if(S.mode=="r")roomPanel();$("bk").onclick=()=>{if(S.n>0&&!confirm("Leave this evening? Your cards won't be saved."))return;home()};$("ot").onclick=openCard;$("ps").onclick=pass;$("mdp").onclick=e=>{const m=e.target.dataset.m;if(!m||m==S.mode)return;if(S.mode=="r")roomLeave();S.mode=m;S.tg=null;play()};if(S.mode=="t"){$("pm").onclick=()=>{S.people=Math.max(2,S.people-1);S.tg=null;play()};$("pp").onclick=()=>{S.people=Math.min(8,S.people+1);S.tg=null;play()}}
+ $("nx").onclick=()=>{S.n++;S.i++;S.tg=null;if(S.n>=S.deck.length)closing();else play()}}
+function tg(){const g=S.tg,b=$("tg"),N=S.people;if(!b)return;
+ if(g.step<N){const last=g.step==N-1;b.innerHTML=`<p class="note">Person ${g.step+1} of ${N}: write where no one can see.</p><div class="fld"><span>name</span><input id="tn" placeholder="optional"></div><textarea class="field" id="ta" placeholder="Honest, not impressive."></textarea><button class="lnk" id="go">${last?"Ready to reveal":"Hide it, pass the phone"}</button>`;
+  $("go").onclick=()=>{g.ans.push($("ta").value);g.names.push($("tn").value.trim());g.step++;tg()}}
+ else{b.innerHTML=`<div class="two blur" id="rv">${g.ans.map((a,i)=>`<div><span>${esc(g.names[i]||"Person "+(i+1))}</span>${esc(a)||"…"}</div>`).join("")}</div><button class="lnk" id="go">Count to three, then tap</button>`;
+  $("go").onclick=()=>{$("rv").classList.remove("blur");$("go").remove()}}}
+const SE="'Cormorant Garamond','Iowan Old Style',Georgia,serif",MO="'Courier Prime',ui-monospace,monospace",SC="'Pinyon Script','Snell Roundhand',cursive",HD="'La Belle Aurore','Bradley Hand',cursive";
+const LA="M145 257C80 235 5 155 1 85C0 45 30 32 50 37C90 50 120 90 138 115C160 155 170 235 167 280",LB2="M115 182C120 155 130 125 150 85C170 45 195 15 215 3C225 -3 230 10 225 35C215 105 185 205 170 265",LT="M150 85C170 45 195 15 215 3C225 -3 230 10 225 35";
+const LG=(tw,sw,c,ox,oy)=>`<g transform="translate(${ox} ${oy})" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke:${c}"><path d="${LA}" stroke-width="${tw}"/><path d="${LB2}" stroke-width="${tw}"/><path d="${LT}" stroke-width="${sw}"/></g>`;
+const LOGO=(w,m,h,l,tw=4.5,sw=9,o=1.8)=>`<svg viewBox="-6 -10 242 300" width="${w}" height="${w*1.24}">${LG(tw,sw,l,o,o)}${LG(tw,sw,h,-o,-o)}${LG(tw,sw,m,0,0)}</svg>`;
+const mark=()=>`<div style="display:grid;place-items:center;margin-top:6px">${LOGO(62,"var(--lm)","var(--lh)","var(--ll)",4.5,9,1.8)}</div>`;
+function logoCv(x,cx,cy,k,m,h,l){[[1.8,1.8,l],[-1.8,-1.8,h],[0,0,m]].forEach(a=>{x.save();x.translate(cx-115*k+a[0]*k,cy-142*k+a[1]*k);x.scale(k,k);x.lineCap="round";x.lineJoin="round";x.strokeStyle=a[2];x.lineWidth=4.5;x.stroke(new Path2D(LA));x.stroke(new Path2D(LB2));x.lineWidth=9;x.stroke(new Path2D(LT));x.restore()})}
+const wob=()=>{let d="";for(let i=0;i<72;i++){const a=i/72*6.2832,r=52+1.6*Math.sin(3*a+1)+1.1*Math.sin(5*a+2)+.8*Math.sin(8*a);d+=(i?"L":"M")+(60+r*Math.cos(a)).toFixed(1)+" "+(60+r*Math.sin(a)).toFixed(1)}return d+"Z"};
+const SEAL=`<svg viewBox="0 0 120 120" width="112" height="112"><defs><radialGradient id="wx" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#a63548"/><stop offset=".55" stop-color="#7a1b2d"/><stop offset="1" stop-color="#4a0e1b"/></radialGradient><radialGradient id="wi" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#8f2639"/><stop offset="1" stop-color="#5f1425"/></radialGradient></defs><path d="${wob()}" fill="url(#wx)"/><circle cx="60.9" cy="60.9" r="44" fill="none" stroke="#33070f" stroke-opacity=".55" stroke-width="1.4"/><circle cx="59.3" cy="59.3" r="44" fill="none" stroke="#d1677a" stroke-opacity=".55" stroke-width="1.4"/><circle cx="60" cy="60" r="41" fill="url(#wi)"/><circle cx="60.5" cy="60.5" r="34" fill="none" stroke="#33070f" stroke-opacity=".5" stroke-width=".9"/><circle cx="59.6" cy="59.6" r="34" fill="none" stroke="#cf6478" stroke-opacity=".5" stroke-width=".9"/><g transform="translate(60 60) scale(.17) translate(-115 -142)">${LG(6,12,"#33070f",3,3)}${LG(6,12,"#e08c9b",-2.5,-2.5)}${LG(6,12,"#a53449",0,0)}</g><ellipse cx="44" cy="36" rx="24" ry="11" fill="#fff" opacity=".1" transform="rotate(-32 44 36)"/></svg>`;
+const WC=[[0,"What's a small thing you're quietly proud of this month?"],[0,"What last made you laugh until it hurt?"],[0,"What do you order when no one's watching?"],[0,"What opinion have you changed in the last year?"],[1,"What do you wish someone would ask you more often?"],[1,"When do you feel most like yourself, and who's there?"],[1,"What are you carrying that you haven't set down?"],[1,"What are you still learning to forgive yourself for?"],[2,"What would you regret not saying to someone at this table?"],[2,"What has love cost you that you'd pay again?"],[2,"What do you want to be braver about?"],[2,"What do you hope people say about you when you've left the room?"]];
+let SEEN=[];try{SEEN=JSON.parse(localStorage.getItem("fo_seen_q")||"[]")}catch(e){}
+const CLP="M18 10v26a6 6 0 0 1-12 0V8a9 9 0 0 1 18 0v32a12 12 0 0 1-24 0V14";
+const CL=()=>`<svg class="clip" viewBox="-3 -3 30 58" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="${CLP}" stroke="#8c8e93" stroke-width="2.2"/><path d="${CLP}" stroke="#e6e8eb" stroke-width=".8" transform="translate(-.5 -.5)"/></svg>`;
+function clipCv(x,px,py,k,rot){x.save();x.translate(px,py);x.rotate(rot);x.scale(k,k);x.lineCap="round";x.lineJoin="round";const p=new Path2D(CLP);x.strokeStyle="#8c8e93";x.lineWidth=2.4;x.stroke(p);x.translate(-.5,-.5);x.strokeStyle="#e3e5e8";x.lineWidth=.8;x.stroke(p);x.restore()}
+const hero=()=>`<div class="bann"><div class="bn2">For Once</div><div class="bs2">For once, let's talk.</div></div>`;
+const palette=()=>`<div class="pal"><div class="pt">the for once palette</div><div class="prw">${[["#0e0e0d","candle"],["#ece7da","linen"],["#b8ccd6","dust"],["#6b1626","wine"]].map(c=>`<div><i style="background:${c[0]}"></i>${c[1]}</div>`).join("")}</div><div class="pf">say it softly.</div></div>`;
+function runPrint(id){const w=document.getElementById(id);if(!w)return;const a=[w.querySelector("img"),w.querySelector(".head")];a.forEach(e=>e&&e.classList.remove("go"));void w.offsetWidth;a.forEach(e=>e&&e.classList.add("go"))}
+const SEATS=["for two","for old friends","for the whole table","for one more","for two","for two, apart","for everyone"];
+function obj(o,k){const t=k%3,n=o.n,cls=["fold","lh","nt"][t];
+ const top=t==0?`<span class="em">${LOGO(48,"#4d1b22","#85454f","#1a0709",5,10,2)}</span><span class="tx">no. ${n}<br>${SEATS[k]||"for two"}</span>`:`<span class="tl">no. ${n}</span><span class="tx">${t==1?dnow():(SEATS[k]||"for two")}</span>`;
+ return `<button class="occ ${cls}${k%2?" nr":""}" data-o="${k}"><span class="tp">${top}</span><span class="bt2"><b>${o.t}</b>${t==0?"":`<span class="hr2"></span>`}<small>${o.s}</small></span>${t==1?`<span class="wm">${LOGO(170,"#1a1919","#1a1919","#1a1919",5,10,0)}</span>`:""}</button>`}
+let RM=null,RP=null,RS=null;const CODEC="0123456789",newCode=()=>Array.from({length:4},()=>CODEC[Math.floor(Math.random()*CODEC.length)]).join("");
+async function roomNS(){if(RM!==null)return RM||null;try{RM=(window.claude&&window.claude.use)?await window.claude.use("room"):false}catch(e){RM=false}return RM||null}
+function roomLeave(){try{RS&&RS.u&&RS.u.forEach(f=>f&&f());RP&&RP.leave()}catch(e){}RP=null;RS=null}
+function onOpen(){shr();if(S.mode=="t"&&S.deck.length>1&&!S.tg){S.tg={step:0,ans:[],names:[]};tg()}if(S.mode=="r")roomOpen()}
+async function roomStart(){const code=newCode();RS={role:"host",code,rid:0,u:[],st:"connecting"};roomPanel();const ns=await roomNS();
+ if(!ns){RS.st="offline";return roomStatus()}try{RP=await ns.join("fo-"+code)}catch(e){RS.st="offline";return roomStatus()}
+ RS.u.push(RP.onPeers(hostTick));await RP.presence({role:"host",name:ME.name||"Host",rid:0,q:null,reveal:0});RS.st="live";roomStatus();hostTick()}
+function roomStatus(){const e=$("rst");if(!e||!RS)return;e.textContent=RS.st=="live"?"live: friends can join now":RS.st=="connecting"?"connecting…":"No live connection in this view, so friends can't join yet. Pass the phone works anywhere."}
+function roomPanel(){const b=$("rm");if(!b)return;
+ if(RS&&RS.role=="host"){b.innerHTML=`<div class="rmc"><span class="lbl">your table's code</span><div class="code">${RS.code.toUpperCase()}</div><p class="note" style="text-align:center;margin:4px 0 4px">Friends: open For Once, tap “Join a table”, enter this code.</p><p class="note" id="rst" style="text-align:center;margin:0 0 10px"></p><p class="note" id="rc" style="text-align:center;margin:0 0 14px"></p></div><textarea class="field" id="ra" placeholder="Your own answer, if you're playing too."></textarea><button class="lnk" id="rr">Reveal together</button><div id="rv2"></div>`;
+  $("rr").onclick=roomReveal;roomStatus();hostTick();return}
+ b.innerHTML=`<p class="note">Everyone writes on their own phone. When you press reveal, every answer appears at once.</p>${RS&&RS.err?`<p class="note">Live tables need the hosted app and a live connection. Pass the phone works anywhere.</p>`:""}<button class="lnk" id="rs">Start a table</button>`;$("rs").onclick=roomStart}
+const roomParts=()=>RP?RP.peers().filter(p=>p.presence&&(p.presence.role=="host"||p.presence.role=="guest")):[];
+const ansList=rid=>roomParts().filter(p=>p.presence.ans&&p.presence.ansRid==rid);
+const ansHtml=l=>`<div class="two">${l.map(p=>`<div><span>${esc(p.presence.name||"Someone")}</span>${esc(p.presence.ans)}</div>`).join("")}</div>`;
+function hostTick(){if(!RS||RS.role!="host"||!RP)return;const rc=$("rc");if(!rc)return;const g=roomParts().filter(p=>p.presence.role=="guest"),dn=g.filter(p=>p.presence.done&&p.presence.rid==RS.rid).length;
+ rc.textContent=(g.length+1)+" at the table · "+(RS.opened?dn+" of "+g.length+" answered":"open the card to begin");const rv=$("rv2");if(rv&&RS.revealed)rv.innerHTML=ansHtml(ansList(RS.rid))}
+function roomOpen(){if(!RS||RS.role!="host"||!RP)return;RS.rid++;RS.opened=true;RS.revealed=false;const rv=$("rv2"),ra=$("ra");if(rv)rv.innerHTML="";if(ra)ra.value="";RP.presence({rid:RS.rid,q:S.deck[S.i][1],reveal:0,ans:null,ansRid:null,done:null});hostTick()}
+function roomReveal(){if(!RS||!RP){const rc=$("rc");if(rc)rc.textContent="Not connected yet.";return}if(!RS.opened){const rc=$("rc");if(rc)rc.textContent="Open the card first, then reveal.";return}RS.revealed=true;RP.presence({reveal:1,ans:($("ra").value||"").slice(0,600)||null,ansRid:RS.rid,done:true});hostTick()}
+function hostOf(){return RP?RP.peers().find(p=>!p.isMe&&p.presence&&p.presence.role=="host"):null}
+function guestTick(){if(!RS||RS.role!="guest"||!RP)return;const h=hostOf(),hp=h?h.presence:null;
+ if(hp&&hp.rid!=null&&hp.rid!==RS.rid){RS.rid=hp.rid;RS.ans="";RS.sent=false;RS.pub=false;RP.presence({rid:hp.rid,done:null,ans:null,ansRid:null})}
+ const ph=!h?"find":!hp.q?"wait":hp.reveal?"reveal":RS.sent?"done":"write";
+ if(ph=="reveal"&&!RS.pub){RS.pub=true;RP.presence({ans:(RS.ans||"").slice(0,600)||null,ansRid:RS.rid,done:true})}
+ const g=roomParts().filter(p=>p.presence.role=="guest"),dn=g.filter(p=>p.presence.done&&p.presence.rid==RS.rid).length;
+ const key=ph+"|"+(hp&&hp.q)+"|"+(ph=="done"?dn+"/"+g.length:ph=="reveal"?JSON.stringify(ansList(RS.rid).map(p=>p.presence.ans)):"");
+ if(key!==RS.key){RS.key=key;RS.phase=ph;guestView(hp,dn,g.length)}}
+function guestView(hp,dn,n){const b=$("gv");if(!b)return;const ph=RS.phase;
+ if(ph=="find")b.innerHTML=`<p class="note" style="text-align:center">Looking for the table… check the code with your host.</p>`;
+ else if(ph=="wait")b.innerHTML=`<p class="note" style="text-align:center">You're in. Waiting for the host to open the next card…</p>`;
+ else if(ph=="write"){b.innerHTML=`<div class="cardw"><div class="card done" style="aspect-ratio:auto;min-height:220px"><div class="m"><span>question</span><span>table ${RS.code.toUpperCase()}</span></div><div class="q" style="font-size:26px">${esc(hp.q)}</div><div></div></div></div><textarea class="field" id="ga" placeholder="Honest, not impressive." style="margin-top:16px"></textarea><button class="lnk" id="gs2">Send my answer</button>`;
+  $("ga").oninput=e=>{RS.ans=e.target.value};$("gs2").onclick=()=>{RS.sent=true;RS.ans=$("ga").value;RP.presence({done:true});RS.key="";guestTick()}}
+ else if(ph=="done")b.innerHTML=`<p class="note" style="text-align:center">Sent. Waiting for everyone… ${dn} of ${n} answered.</p>`;
+ else b.innerHTML=`<p class="note" style="text-align:center">All together:</p>${ansHtml(ansList(RS.rid))}`}
+function joinTable(){A.innerHTML=`<button class="lnk dim back" id="bk">← Back</button><div class="h2" style="margin-top:44px">Join a table</div><p class="note" style="text-align:center">Ask the host for the four-digit code on their screen.</p>
+ <div class="fld"><span>code</span><input id="jc" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" style="letter-spacing:.4em"></div><div class="fld"><span>name</span><input id="jn2" placeholder="so they know it's you" value="${esc(ME.name)}"></div><p class="note" id="jm" style="min-height:20px"></p><button class="lnk" id="jg">Join</button>`;
+ $("bk").onclick=home;$("jg").onclick=async()=>{const code=$("jc").value.trim().toLowerCase(),nm=($("jn2").value.trim()||"Guest").slice(0,24),jm=$("jm");if(!/^[0-9]{4}$/.test(code)){jm.textContent="That code is four digits.";return}
+  jm.textContent="Connecting…";const ns=await roomNS();if(!ns){jm.textContent="Live tables need the hosted app and a live connection. You can still pass the phone.";return}
+  try{RP=await ns.join("fo-"+code)}catch(e){jm.textContent="Couldn't join that table. Check the code.";return}
+  RS={role:"guest",code,rid:null,ans:"",u:[]};
+  A.innerHTML=`<button class="lnk dim back" id="bk">← Leave</button><div class="h2" style="margin-top:44px">Table ${code.toUpperCase()}</div><div id="gv"></div>`;$("bk").onclick=home;
+  RS.u.push(RP.onPeers(guestTick));await RP.presence({role:"guest",name:nm,rid:null,done:null,ans:null});guestTick()}}
+const WL="hello@foronce.co";/* REPLACE with the inbox you want waitlist emails sent to */
+function waitlist(){const e=$("wle").value.trim(),m=$("wls");if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent="Enter a valid email.";return}
+ const u="mailto:"+WL+"?subject="+encodeURIComponent("For Once waitlist")+"&body="+encodeURIComponent("Please add me to the For Once waitlist (printed deck, birthday gifts, merch).\n\nMy email: "+e);
+ m.textContent="Your mail app should open. Send the message and you're on the list. If it doesn't open, email "+WL+".";try{window.open(u,"_blank")||(location.href=u)}catch(x){}}
+const rcp=(id,img)=>`<div class="rp"><div class="feed" id="${id}">${img}</div><div class="slotw"></div><div class="pbody"><span><i class="led"></i>printing</span><span>for once</span></div></div>`;
+const dshort=()=>new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"}).toUpperCase();
+const qhtml=t=>`<div class="qw"><div class="q qb" aria-hidden="true">${t}</div><div class="q qs">${t}</div></div><div class="hint">hold to bring it into focus</div><i class="cm c1"></i><i class="cm c2"></i><i class="cm c3"></i><i class="cm c4"></i>`;
+const MK="fo_mock_v2",DEMO_CODE="123456",NAMES=["Maya","Leo","Noor","Theo","Ines","Jonah"],CITIES=["Brooklyn, New York","London, England","Lisbon, Portugal","Seoul, South Korea","Mexico City, Mexico","Toronto, Canada"];
+const mdb={get(){try{const d=JSON.parse(localStorage.getItem(MK));if(d&&d.u)return d}catch(e){}return{u:{},f:[],l:[],s:null,ann:[]}},set(d){try{localStorage.setItem(MK,JSON.stringify(d))}catch(e){}}};
+const rid=()=>Math.random().toString(36).slice(2,9);
+/* Demo stand-in for the real server (backend/schema.sql). Same rules: the text of a locked letter is never handed to its recipient. */
+const acct={
+ phone:p=>{const t=String(p||"").trim().replace(/[\s().-]/g,"");return /^\+[1-9]\d{7,14}$/.test(t)?t:null},
+ verify(ph,code){if(code!==DEMO_CODE)return null;const d=mdb.get();let u=Object.values(d.u).find(x=>x.phone==ph);if(!u){u={id:"u"+rid(),phone:ph,name:"",city:""};d.u[u.id]=u}d.s=u.id;mdb.set(d);return u},
+ me(){const d=mdb.get();return d.s&&d.u[d.s]?d.u[d.s]:null},
+ save(name,city){const d=mdb.get(),u=d.u[d.s],first=!u.name;u.name=name;u.city=city;if(first){let n=Object.values(d.u).find(x=>x.phone=="+15550100200");if(!n){n={id:"u"+rid(),phone:"+15550100200",name:"Noor",city:"Lisbon, Portugal"};d.u[n.id]=n}d.f.push({id:"f"+rid(),a:n.id,b:u.id,st:"pending"})}mdb.set(d);return u},
+ out(){const d=mdb.get();d.s=null;mdb.set(d)},
+ del(){const d=mdb.get(),id=d.s;delete d.u[id];d.f=d.f.filter(f=>f.a!=id&&f.b!=id);d.l=d.l.filter(l=>l.from!=id&&l.to!=id);d.s=null;mdb.set(d)},
+ sweep(d){const t=Date.now();d.f.forEach(f=>{if(f.st=="pending"&&f.auto&&f.auto<=t){f.st="accepted";const o=d.u[f.b],m=d.u[f.a];d.l.push({id:"l"+rid(),from:f.b,to:f.a,fromName:o.name,toName:m.name,body:"Welcome to the table, "+m.name+". Ask me something when you're ready.",q:"",unlock:t+60000,created:t,notified:false});(d.ann=d.ann||[]).push(o.name+" accepted your request.")}})},
+ friends(){const d=mdb.get();acct.sweep(d);mdb.set(d);const me=d.s,o={friends:[],incoming:[],outgoing:[]};d.f.forEach(f=>{if(f.a!=me&&f.b!=me)return;const oid=f.a==me?f.b:f.a,u=d.u[oid];if(!u||f.st=="blocked")return;const r={fid:f.id,id:oid,name:u.name,city:u.city};if(f.st=="accepted")o.friends.push(r);else(f.a==me?o.outgoing:o.incoming).push(r)});return o},
+ add(ph){const p=acct.phone(ph);if(!p)return"invalid";const d=mdb.get(),me=d.u[d.s];if(p==me.phone)return"self";let u=Object.values(d.u).find(x=>x.phone==p);if(!u){const k=p.replace(/\D/g,"").split("").reduce((a,c)=>a+ +c,0);u={id:"u"+rid(),phone:p,name:NAMES[k%NAMES.length],city:CITIES[k%CITIES.length]};d.u[u.id]=u}
+  if(d.f.some(f=>(f.a==me.id&&f.b==u.id)||(f.a==u.id&&f.b==me.id)))return"exists";d.f.push({id:"f"+rid(),a:me.id,b:u.id,st:"pending",auto:Date.now()+3000});mdb.set(d);return"pending"},
+ respond(fid,ok){const d=mdb.get();const f=d.f.find(x=>x.id==fid);if(!f)return;if(ok)f.st="accepted";else d.f=d.f.filter(x=>x.id!=fid);mdb.set(d)},
+ block(uid){const d=mdb.get(),me=d.s,f=d.f.find(x=>(x.a==me&&x.b==uid)||(x.a==uid&&x.b==me));if(f){f.st="blocked";f.by=me}mdb.set(d)},
+ send(x){const d=mdb.get(),me=d.s;if(x.to!=me&&!d.f.some(f=>f.st=="accepted"&&((f.a==me&&f.b==x.to)||(f.a==x.to&&f.b==me))))throw new Error("You can only send letters to friends.");d.l.push({id:"l"+rid(),from:me,to:x.to,fromName:x.fromName,toName:x.toName,body:x.body,q:x.q||"",unlock:Math.max(x.unlock,Date.now()),created:Date.now(),notified:false});mdb.set(d)},
+ letters(){const d=mdb.get(),me=d.s,t=Date.now();acct.sweep(d);mdb.set(d);const bl=new Set(d.f.filter(f=>f.st=="blocked"&&f.by==me).map(f=>f.a==me?f.b:f.a));
+  return d.l.filter(l=>(l.from==me||l.to==me)&&!(l.from!=me&&bl.has(l.from))).map(l=>{const locked=l.to==me&&t<l.unlock;return{id:l.id,dir:l.from==me&&l.to==me?"self":l.from==me?"sent":"received",fromName:l.fromName,toName:l.toName,q:l.q,unlock:l.unlock,locked,body:locked?null:l.body}}).sort((a,b)=>b.unlock-a.unlock)},
+ due(){const d=mdb.get(),me=d.s,t=Date.now(),out=[];d.l.forEach(l=>{if(l.to==me&&l.unlock<=t&&!l.notified){l.notified=true;out.push(l)}});if(out.length)mdb.set(d);return out},
+ report(id){const d=mdb.get();(d.rep=d.rep||[]).push(id);mdb.set(d)}};
+let WK=false;try{WK=localStorage.getItem("fo_weekly")=="1"}catch(e){}
+function toast(msg,fn){const e=document.createElement("div");e.className="toast";e.textContent=msg;e.onclick=()=>{e.remove();fn&&fn()};document.body.appendChild(e);setTimeout(()=>e.remove(),6000)}
+setInterval(()=>{if(!ME.id||!acct.me())return;const d=mdb.get();acct.sweep(d);const ann=d.ann||[];d.ann=[];mdb.set(d);ann.forEach(a=>toast(a));acct.due().forEach(l=>toast("A letter just opened · "+(l.from==ME.id?"the one you wrote yourself":"from "+l.fromName),()=>home()))},2000);
+const cleanLink=(k,o)=>{o=o&&typeof o==="object"?o:{};const t=(v,n)=>String(v==null?"":v).slice(0,n);return k=="p"?{to:t(o.to,40),f:t(o.f,40),m:t(o.m,2000),q:t(o.q,300),u:Number(o.u)||0}:{to:t(o.to,40),f:t(o.f,40),q:t(o.q,300)}};
+const setME=u=>{ME={id:u.id,name:u.name,city:u.city,phone:u.phone,email:""}};
+function lettersList(){if(ME.id)return acct.letters().map(l=>({t:(l.dir=="received"?"from "+l.fromName:"to "+l.toName),locked:l.locked,o:{id:l.id,to:l.toName,f:l.fromName,m:l.body,q:l.q,u:l.unlock,saved:true,rcv:l.dir=="received",self:l.dir=="self"}}));return CAP.map(c=>({t:"to "+c.to,locked:false,o:c}))}
+function openLetter(x){if(!x)return;if(x.locked)return toast("Still sealed. It opens on "+new Date(x.o.u).toLocaleDateString()+".");sent(x.o)}
+function phoneScreen(){A.innerHTML=`<button class="lnk dim back" id="bk">← Back</button><div class="h2" style="margin-top:50px">Your number</div><p class="note" style="text-align:center">We'll text you a code. Your number is only used to sign you in and to let friends who already have it find you.</p><div class="fld"><span>phone</span><input id="pn" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 415 555 0100"></div><p class="note" id="pe" style="min-height:20px;color:var(--blue);margin:0 0 8px"></p><button class="lnk" id="sc">Send code</button><p class="note" style="margin-top:22px"><b>Demo:</b> no text message is sent. Use the code 123456.</p><p class="note">By continuing you agree to the Terms and Privacy Policy.</p>`;
+ $("bk").onclick=()=>ME.id?home():auth();$("sc").onclick=()=>{const p=acct.phone($("pn").value);if(!p){$("pe").textContent="Use your full number with the country code, like +1 415 555 0100.";return}otpScreen(p)}}
+function otpScreen(p){A.innerHTML=`<button class="lnk dim back" id="bk">← Back</button><div class="h2" style="margin-top:50px">Enter the code</div><p class="note" style="text-align:center">Sent to ${esc(p)}</p><div class="fld"><span>code</span><input id="oc" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456" style="letter-spacing:.3em"></div><p class="note" id="oe" style="min-height:20px;color:var(--blue);margin:0 0 8px"></p><button class="lnk" id="vf">Verify</button>`;
+ $("bk").onclick=phoneScreen;$("vf").onclick=()=>{const u=acct.verify(p,$("oc").value.trim());if(!u){$("oe").textContent="That code didn't work. Try again.";return}setME(u);u.name?home():setup()}}
+function setup(){A.innerHTML=`<div class="h2" style="margin-top:44px">A little about you</div><p class="note" style="text-align:center">Friends will see your name and the city you live in.</p><div class="fld"><span>name</span><input maxlength="40" id="sn" placeholder="your first name" value="${esc(ME.name||"")}"></div><div class="fld"><span>lives in</span><input maxlength="80" id="sc2" placeholder="city, country (optional)"></div><p class="note" id="se" style="min-height:20px;color:var(--blue)"></p><button class="lnk" id="sd">Done</button>`;
+ $("sd").onclick=()=>{const n=$("sn").value.trim();if(!n){$("se").textContent="Tell us your first name.";return}setME(acct.save(n,$("sc2").value.trim()));intro()}}
+function profile(msg){const fr=acct.friends(),fmt=x=>`<div><b>${esc(x.name)}</b><small>${esc(x.city||"")}</small></div>`;
+ A.innerHTML=`<button class="lnk dim back" id="bk">← Home</button><div class="pcard"><div class="pav">${esc((ME.name||"?").charAt(0).toUpperCase())}</div><div class="pn2">${esc(ME.name)}</div>${ME.city?`<div class="pc">lives in ${esc(ME.city)}</div>`:""}<div class="pc">${fr.friends.length} ${fr.friends.length==1?"friend":"friends"}</div></div>
+ ${fr.incoming.length?`<div class="sec"><span class="lbl">Friend requests</span>${fr.incoming.map(x=>`<div class="frow">${fmt(x)}<span><button class="lnk" data-a="${x.fid}">Accept</button> <button class="lnk dim" data-d="${x.fid}">Decline</button></span></div>`).join("")}</div>`:""}
+ <div class="sec"><span class="lbl">Friends</span>${fr.friends.length||fr.outgoing.length?"":`<p class="note">No one yet. Add a friend by their phone number.</p>`}${fr.friends.map(x=>`<div class="frow">${fmt(x)}<button class="lnk dim" data-b="${x.id}">Block</button></div>`).join("")}${fr.outgoing.map(x=>`<div class="frow"><div><b>${esc(x.name)}</b><small>request sent</small></div></div>`).join("")}
+ <div class="fld" style="margin-top:14px"><span>their phone</span><input id="fp" type="tel" placeholder="+1 415 555 0100"></div><button class="lnk" id="fa">Add a friend</button><p class="note" id="fm2">${esc(msg||"")}</p></div>
+ <div class="sec"><button class="lnk dim" id="lo">Log out</button><button class="lnk dim" id="dl" style="margin-left:22px">Delete my account</button></div>`;
+ $("bk").onclick=home;A.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{acct.respond(b.dataset.a,true);profile("You're friends now.")});A.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{acct.respond(b.dataset.d,false);profile()});
+ A.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{if(confirm("Block this friend? You won't see each other's letters.")){acct.block(b.dataset.b);profile("Blocked.")}});
+ $("fa").onclick=()=>{const r=acct.add($("fp").value);profile({pending:"Request sent. They'll see it when they open For Once.",self:"That's your own number.",exists:"You're already connected.",invalid:"Use their full number, like +1 415 555 0100."}[r]||"Done.")};
+ $("lo").onclick=()=>{acct.out();ME={name:"",email:""};auth()};$("dl").onclick=()=>{if(confirm("Delete your account? This permanently deletes your profile, your friends and every letter you sent or received.")){acct.del();ME={name:"",email:""};auth()}}}
+function tonight(){const d=new Date(),h=d.getHours(),w=d.getDay();return h>=22||h<4?3:(w==5||w==6)?4:w==0?2:1}
+function start(k){const o=O[k],seq=S.fl<0?[0,0,1,1,2]:[0,1,2,3,4].map(()=>S.fl),deck=[];
+ seq.forEach(f=>{const c=[...o.q.filter(q=>q[0]==f),...o.q.filter(q=>q[0]==f),...WC.filter(q=>q[0]==f)].filter(q=>!deck.some(d=>d[1]==q[1]));
+  let u=c.filter(q=>!SEEN.includes(q[1]));if(!u.length){SEEN=SEEN.filter(s=>!c.some(q=>q[1]==s));u=c}
+  deck.push(u[Math.floor(Math.random()*u.length)])});
+ SEEN=[...SEEN,...deck.map(d=>d[1])].slice(-150);try{localStorage.setItem("fo_seen_q",JSON.stringify(SEEN))}catch(e){}
+ S.occ=o;S.deck=deck;S.i=0;S.n=0;S.tg=null;play()}
+function openCard(){const cd=$("cd");if(!cd||cd.classList.contains("done"))return;clearTimeout(t);cd.classList.add("held","done");onOpen()}
+function pass(){const f=S.deck[S.i][0],c=[...S.occ.q.filter(q=>q[0]==f),...WC.filter(q=>q[0]==f)].filter(q=>!S.deck.some(d=>d[1]==q[1]));if(!c.length)return;S.deck[S.i]=c[Math.floor(Math.random()*c.length)];SEEN.push(S.deck[S.i][1]);S.tg=null;play()}
+function closing(){const n=S.deck.length;A.innerHTML=`<div style="height:26px"></div>${mark()}<div class="h2" style="margin-top:18px">That was the evening.</div><p class="note" style="text-align:center">${n} questions at ${esc(S.occ.t)}. Whatever was said, it was said for once.</p>
+ <div style="display:grid;gap:2px;margin-top:26px;justify-items:start"><button class="lnk" id="c1">Write them a P.S.</button><button class="lnk dim" id="c2">Five more</button><button class="lnk dim" id="c3">Share the evening</button><button class="lnk dim" id="c4">Call it a night</button></div>`;
+ $("c1").onclick=()=>letter({d:30});$("c2").onclick=()=>start(O.indexOf(S.occ));$("c3").onclick=async()=>sheet(await drawQ({top:new Date().toLocaleDateString(),q:n+" honest questions at "+S.occ.t+". Phones down."}),null,"Share the evening");$("c4").onclick=home}
+function shr(){const b=$("shr");if(!b)return;b.innerHTML='<button class="lnk dim" id="sq">Share this card</button>';$("sq").onclick=async()=>sheet(await drawQ({top:S.occ.t,q:S.deck[S.i][1]}),null,"Share this card")}
+async function fonts(){try{await Promise.all(["italic 500 40px 'Cormorant Garamond'","22px 'Courier Prime'","50px 'Pinyon Script'","60px 'La Belle Aurore'"].map(f=>document.fonts.load(f,"Aa")));await document.fonts.ready}catch(e){}}
+function lines(x,t,w){const out=[];t.split("\n").forEach(p=>{let l="";p.split(" ").forEach(wd=>{if(x.measureText(l+wd).width>w&&l){out.push(l.trim());l=""}l+=wd+" "});out.push(l.trim())});return out}
+function grain(x){const d=x.getImageData(90,90,900,1170),a=d.data;for(let i=0;i<a.length;i+=4){const n=(Math.random()-.5)*15;a[i]+=n;a[i+1]+=n;a[i+2]+=n}x.putImageData(d,90,90);x.save();x.globalAlpha=.08;x.strokeStyle="#5a4b36";x.lineWidth=1;for(let k=0;k<280;k++){const px=90+Math.random()*900,py=90+Math.random()*1170,l=6+Math.random()*16,an=Math.random()*6.28;x.beginPath();x.moveTo(px,py);x.lineTo(px+Math.cos(an)*l,py+Math.sin(an)*l);x.stroke()}x.restore()}
+function rows(x,r,y0){x.font=`20px ${MO}`;r.forEach((a,i)=>{const y=y0+i*50;x.fillStyle="#8a857a";x.fillText(a[0],150,y);x.fillStyle="#16181c";x.fillText(a[1],360,y);x.strokeStyle="#16181c40";x.lineWidth=1.5;x.beginPath();x.moveTo(150,y+16);x.lineTo(930,y+16);x.stroke()})}
+const dnow=()=>new Date().toLocaleDateString("en-GB").replace(/\//g," / ");
+function base(){const c=document.createElement("canvas");c.width=1080;c.height=1350;const x=c.getContext("2d");x.fillStyle="#0e0e0d";x.fillRect(0,0,1080,1350);x.fillStyle="#ece7da";x.fillRect(90,90,900,1170);x.strokeStyle="#16181c33";x.lineWidth=2;x.strokeRect(112,112,856,1126);return[c,x]}
+async function draw(o){await fonts();const[c,x]=base(),n=String(o.u%9999).padStart(4,"0");
+ x.fillStyle="#16181c";x.font=`20px ${MO}`;x.fillText("FOR ONCE",150,178);x.fillStyle="#8a857a";x.textAlign="right";x.fillText("A LETTER",930,178);x.textAlign="left";
+ rows(x,[["NO.",n],["DATE",dnow()],["FROM",o.f]],240);
+ x.fillStyle="#16181c";x.font=`italic 400 54px ${SE}`;x.fillText("For "+o.to+",",150,470);
+ let y=550;if(o.q){x.fillStyle="#8a857a";x.font=`italic 400 28px ${SE}`;x.fillText("“"+(o.q.length>64?o.q.slice(0,62)+"…":o.q)+"”",150,y);y=610}
+ x.fillStyle="#2a2a2e";let s=48,L;for(;s>=30;s-=2){x.font=`italic 400 ${s}px ${SE}`;L=lines(x,o.m,780);if(y+L.length*s*1.4<=980)break}L.forEach((l,i)=>x.fillText(l,150,y+i*s*1.4));
+ signoff(x,o.f);logoCv(x,870,1112,.42,"#e2dccd","#fffdf6","#b9b09a");x.fillStyle="#4d1b22";x.font=`40px ${SC}`;x.textAlign="right";x.fillText("For Once",930,1222);x.textAlign="left";grain(x);clipCv(x,770,34,2.4,.12);return c.toDataURL("image/png")}
+function signoff(x,f){x.strokeStyle="#16181c55";x.lineWidth=2;x.beginPath();x.moveTo(150,1040);x.lineTo(240,1040);x.stroke();x.fillStyle="#8a857a";x.font=`italic 500 32px ${SE}`;x.fillText("with love,",150,1100);x.fillStyle="#3b1a21";x.save();x.translate(150,1195);x.rotate(-.03);x.font=`92px ${HD}`;x.fillText(f,0,0);x.restore()}
+async function drawQ(o){await fonts();const[c,x]=base(),n=String(Math.floor(Math.random()*9000)+100);
+ x.fillStyle="#16181c";x.font=`20px ${MO}`;x.fillText("FOR ONCE",150,178);x.fillStyle="#8a857a";x.textAlign="right";x.fillText((o.top||"A QUESTION").toUpperCase(),930,178);x.textAlign="left";
+ rows(x,[["NO.",n],["DATE",dnow()]],240);
+ x.textAlign="center";x.fillStyle="#16181c";let s=72,L=[];for(;s>=40;s-=2){x.font=`italic 400 ${s}px ${SE}`;L=lines(x,o.q,740);if(L.length*s*1.22<=520)break}
+ const y0=700-L.length*s*.61+s;L.forEach((l,i)=>x.fillText(l,540,y0+i*s*1.22));x.textAlign="left";
+ if(o.to){x.fillStyle="#8a857a";x.font=`italic 400 30px ${SE}`;x.fillText("for "+o.to,150,960);signoff(x,o.f||"me")}
+ else{x.fillStyle="#8a857a";x.font=`18px ${MO}`;x.fillText("HOLD. BREATHE. ANSWER.",150,1190)}
+ logoCv(x,870,1112,.42,"#e2dccd","#fffdf6","#b9b09a");x.fillStyle="#4d1b22";x.font=`40px ${SC}`;x.textAlign="right";x.fillText("For Once",930,1222);x.textAlign="left";grain(x);return c.toDataURL("image/png")}
+function sheet(img,url,title){const d=document.createElement("div");d.className="sheet";const g=q=>d.querySelector(q);
+ d.innerHTML=`<div class="row" style="margin-bottom:14px"><span class="lbl">${title}</span><button class="lnk dim" id="x1">Close</button></div>${rcp("spw",`<img class="out rimg" src="${img}" alt="${title}">`)}<div class="row" style="margin-top:6px"><button class="lnk" id="x2">Share</button><button class="lnk" id="x3">Save image</button>${url?'<button class="lnk dim" id="x4">Copy link</button>':""}</div><p class="note" id="x5">Tip: press and hold the image (or right-click it) to save or copy it.</p>`;
+ document.body.appendChild(d);runPrint("spw");const st=m=>g("#x5").textContent=m;g("#x1").onclick=()=>d.remove();
+ g("#x3").onclick=()=>{const a=document.createElement("a");a.href=img;a.download="for-once.png";document.body.appendChild(a);a.click();a.remove();st("Saving… if nothing downloads, press and hold the image instead.")};
+ g("#x2").onclick=async()=>{try{const b=await(await fetch(img)).blob(),f=new File([b],"for-once.png",{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],text:url||"For Once"});else if(url)await navigator.share({url,text:"For Once"});else throw 0}catch(e){if(e&&e.name==="AbortError")return;st("Sharing isn't available in this browser. Use Save image, or press and hold the image.")}};
+ if(url)g("#x4").onclick=async()=>{try{await navigator.clipboard.writeText(url);st("Link copied.")}catch(e){st("Couldn't copy. Select it manually: "+url)}}}
+async function sent(o){const url=o.saved?"":link("p",o),sl=o.u>Date.now(),dt=new Date(o.u).toLocaleDateString();
+ const note=o.saved?(sl?(o.self?"Sealed until "+dt+". We'll remind you when it opens.":"Sealed until "+dt+". "+esc(o.to)+" will get a notification when it opens."):(o.rcv?"From "+esc(o.f)+".":"Ready to be read.")):(sl?"Sealed until "+dt+". Share the sealed card now; the letter stays hidden. Without an account, the date is a promise, not a lock.":"Ready to be read.");
+ A.innerHTML=`<button class="lnk dim back" id="bk">← Home</button><div style="height:30px"></div><div class="seal">${SEAL}</div><p class="note" style="text-align:center">${note}</p>${rcp("pw",`<img class="out rimg" id="im" alt="Your P.S.">`)}<button class="lnk dim" id="rp">Print again</button>${o.saved?`<button class="lnk" id="sh">Share the card</button>`:`<div class="row"><button class="lnk" id="sh">Share the card</button><button class="lnk dim" id="cp">Copy link</button></div>`}${o.rcv&&o.id?`<button class="lnk dim" id="rpt" style="margin-top:8px">Report this letter</button>`:""}${FILE&&!o.saved?`<p class="note">Links only open for others once this file is hosted online.</p>`:""}`;
+ $("bk").onclick=home;if(!o.saved)$("cp").onclick=()=>cp("cp",url);if($("rpt"))$("rpt").onclick=()=>{if(confirm("Report this letter? We'll review it.")){acct.report(o.id);toast("Thank you. We'll take a look.")}};
+ const img=sl?await drawQ({top:"Sealed until "+dt,q:"I wrote you something. It opens on "+dt+".",to:o.to,f:o.f}):await draw(o);$("im").onload=()=>runPrint("pw");$("im").src=img;$("rp").onclick=()=>runPrint("pw");$("sh").onclick=()=>sheet(img,url||null,"Your P.S.")}
+function letter(p){const d=p.d!=null?p.d:30,fl=ME.id?acct.friends().friends:[],opts=[[0,"Open now"],[7,"7 days"],[30,"30 days"],[90,"90 days"]];if(ME.id)opts.push([1/1440,"1 minute (demo)"]);
+ const rc=ME.id?`<div class="fld"><span>For</span><select id="tp" class="inl"><option value="self">myself</option>${fl.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join("")}<option value="x" ${p.to?"selected":""}>someone else (share a link)</option></select></div><div class="fld" id="tw" style="display:${p.to?"flex":"none"}"><span>name</span><input maxlength="40" id="to" placeholder="their name" value="${esc(p.to||"")}"></div>`:`<div class="fld"><span>For</span><input maxlength="40" id="to" placeholder="their name" value="${esc(p.to||"")}"></div>`;
+ A.innerHTML=`<button class="lnk dim back" id="bk">← Home</button><div class="script" style="margin-top:34px">P.S.</div><p class="note" style="text-align:center;margin:4px 0 22px">The thing you didn't say. It becomes a handwritten card, to send now or seal for later.</p>${p.q?`<p class="qt">In reply to: “${esc(p.q)}”</p>`:""}
+ ${rc}<textarea maxlength="1500" class="field" id="ms" placeholder="Write it the way you'd say it, if you weren't afraid." style="min-height:130px"></textarea><div class="sign"><span>with love,</span><input maxlength="40" id="fr" placeholder="your name" value="${esc(p.from||ME.name)}"></div>
+ <div class="lbl" style="margin-bottom:6px">Keep it sealed until</div><select class="field" id="un">${opts.map(x=>`<option value="${x[0]}" ${x[0]==d?"selected":""}>${x[1]}</option>`).join("")}</select><button class="lnk" id="sl">Seal the letter</button>`;
+ $("bk").onclick=home;if(ME.id)$("tp").onchange=()=>{$("tw").style.display=$("tp").value=="x"?"flex":"none"};
+ $("sl").onclick=()=>{const m=$("ms").value.trim();if(!m){$("ms").focus();$("ms").placeholder="Write something first…";return}
+  const tp=ME.id?$("tp").value:"x",fn=$("fr").value.trim()||"me",u=Date.now()+$("un").value*864e5;
+  if(tp!="x"){const self=tp=="self",fr=fl.find(f=>f.id==tp),o={to:self?fn:fr.name,f:fn,m,u,q:p.q||"",saved:true,self};try{acct.send({to:self?ME.id:tp,toName:o.to,fromName:fn,body:m,q:o.q,unlock:u})}catch(e){toast(e.message);return}sent(o);return}
+  const o={to:$("to").value.trim()||"you",f:fn,m,u,q:p.q||""};CAP.unshift(o);try{localStorage.setItem("ps_cap",JSON.stringify(CAP.slice(0,20)))}catch(e){}sent(o)}}
+function ask(p){
+ A.innerHTML=`<button class="lnk dim back" id="bk">← Home</button><div class="h2" style="margin-top:44px">I'd like to ask you something</div><p class="note" style="text-align:center">One question for anyone you want closer, near or far. They hold the card to read it, answer you, and can ask one back.</p>
+ <div class="fld"><span>For</span><input maxlength="40" id="to" placeholder="their name" value="${esc(p.to||"")}"></div><div class="sign"><span>with love,</span><input maxlength="40" id="fr" placeholder="your name" value="${esc(p.from||ME.name)}"></div>
+ <div class="row"><span class="lbl">Your question</span><button class="lnk dim" id="sp">Surprise me</button></div><select class="field" id="qs" style="margin-top:8px">${CHK.map(q=>`<option>${esc(q)}</option>`).join("")}<option value="">✎ Write my own…</option></select><textarea class="field" id="own" placeholder="Ask what you actually want to know." style="display:none"></textarea>
+ <button class="lnk" id="mk">Make the card</button><div id="res"></div>`;
+ const sh=()=>$("own").style.display=$("qs").value===""?"block":"none";$("qs").onchange=sh;if(p.own){$("qs").value="";sh()}
+ $("sp").onclick=()=>{$("qs").selectedIndex=Math.floor(Math.random()*CHK.length);sh()};
+ $("bk").onclick=home;$("mk").onclick=async()=>{const q=$("qs").value||$("own").value.trim();if(!q){$("own").focus();return}
+  const o={to:$("to").value.trim()||"you",f:$("fr").value.trim()||"me",q},u=link("q",o),img=await drawQ({top:"I'd like to ask you something",q,to:o.to,f:o.f});
+  $("res").innerHTML=`<img class="out" src="${img}" alt="Question card"><div class="row"><button class="lnk" id="s2">Share the card</button><button class="lnk dim" id="c2">Copy link</button></div>${FILE?`<p class="note">Links only open for others once this file is hosted online.</p>`:""}`;
+  $("s2").onclick=()=>sheet(img,u,"Your question");$("c2").onclick=()=>cp("c2",u)}}
+function inbox(k,o){const go=()=>history.replaceState(null,"",location.pathname);
+ if(k=="p"){const ok=Date.now()>=o.u;A.innerHTML=`<div class="script" style="margin-top:30px">For Once</div><div class="seal">${SEAL}</div><p class="note" style="text-align:center">A letter for ${esc(o.to)}, with love from ${esc(o.f)}.<br>${ok?"It's waiting for you.":"Sealed until "+new Date(o.u).toLocaleDateString()+"."}</p>${ok?`<button class="lnk" id="op" style="display:block;margin:auto">Break the seal</button>`:""}<div id="lt"></div>`;
+  if(ok)$("op").onclick=async()=>{const i=await draw(o);$("op").remove();$("lt").innerHTML=`${rcp("ipw",`<img class="out rimg" src="${i}" alt="Letter">`)}<div class="row"><button class="lnk" id="wb">Write one back</button><button class="lnk dim" id="ab">Ask them something</button></div><button class="lnk dim" id="sv" style="margin-top:8px">Save this card</button>`;
+   runPrint("ipw");$("wb").onclick=()=>{go();letter({to:o.f,from:o.to,d:0})};$("ab").onclick=()=>{go();ask({to:o.f,from:o.to})};$("sv").onclick=()=>sheet(i,null,"Your letter")}}
+ else{S.deck=[[1,o.q]];S.mode="s";
+  A.innerHTML=`<div class="script" style="margin-top:26px;font-size:40px">${esc(o.f)} would like to ask you something</div><div class="card" id="cd" style="margin-top:20px"><div class="m"><span>For ${esc(o.to)}</span><span>For Once</span></div>${qhtml(esc(o.q))}</div><div class="row" style="margin-top:18px"><button class="lnk" id="an">Answer them</button><button class="lnk dim" id="ab">Ask them one back</button></div>`;
+  holdable();$("an").onclick=()=>{go();letter({to:o.f,from:o.to,d:0,q:o.q})};$("ab").onclick=()=>{go();ask({to:o.f,from:o.to,own:1})}}}
+
+let ME={name:"",email:""};
+function auth(){A.innerHTML=`${hero()}<div style="margin-top:22px"><button class="lnk" id="ph">Sign up or log in with your phone</button></div><p class="note" style="margin:14px 0 2px">or look around first</p><div class="fld"><span>name</span><input maxlength="40" id="wn" placeholder="your first name (optional)" autocomplete="given-name" value="${esc(ME.name)}"></div><button class="lnk" id="gs" style="margin-top:6px">Continue as guest</button><p class="note" style="margin-top:24px">Guests keep everything on this device. Log in to keep your letters, add friends and get a notification when a letter opens.</p>`;
+ $("ph").onclick=phoneScreen;$("gs").onclick=()=>{ME={name:$("wn").value.trim(),email:""};intro()}}
+function intro(){const st=[["Pick a table","Dinner, a date, a late-night call. Choose the occasion you're in."],["Hold a card","Press and hold to open a question. The pause is the point."],["Answer for real","Say it out loud, or write first and reveal together so nobody copies."],["Leave a note","End with a P.S.: a short handwritten-style note to the person across from you."]];
+ A.innerHTML=`${hero()}<div style="height:18px"></div>${st.map((x,i)=>`<div style="display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--line)"><span style="font:italic 500 36px 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;color:var(--blue)">${i+1}</span><div><div style="font:italic 500 25px 'Cormorant Garamond','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif">${x[0]}</div><div class="note" style="margin:2px 0 0">${x[1]}</div></div></div>`).join("")}<button class="lnk" id="go" style="margin-top:20px">Begin</button>`;
+ $("go").onclick=home}
+try{const m=location.hash.match(/^#([pq])=(.+)$/);if(m)inbox(m[1],cleanLink(m[1],d64(m[2])));else{const m=acct.me();if(m){setME(m);m.name?home():setup()}else auth()}}catch(e){home()}
+</script></body></html>
