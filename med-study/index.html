@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CUHK Thorax Question Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#5D85FE; --ink-blue:#4D6ED3; --soft:#EEF1FF; --node:#AABDFF; --ink:#1B1C21; --gray:#727272; --label:#A5B1D7; --line:#E5ECF4; --muted:#6373A4;
+  --badbg:#FDEEEE; --badline:#F1B5B5; --bad:#B42318;
+  --sans:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--node) transparent;}
+::selection{background:var(--blue);color:#fff;}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;letter-spacing:-.005em;-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden;}
+h1,h2,h3{font-family:var(--sans);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.1;}
+button,select,input,textarea{font-family:var(--sans);}
+.mono,.eyebrow{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;}
+.eyebrow{color:var(--ink-blue);}
+.dim{color:var(--gray);}
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.login-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:38px 34px;max-width:420px;width:100%;}
+.login-card h1{font-size:2rem;margin:10px 0 10px;}
+.login-card p{font-size:.92rem;color:var(--gray);margin:0 0 22px;}
+.login-card label{display:block;color:var(--muted);margin-bottom:6px;}
+.login-card input{width:100%;padding:12px 13px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:.95rem;margin-bottom:10px;}
+.login-card button{width:100%;background:var(--ink-blue);color:#fff;border:0;padding:13px;border-radius:6px;font-weight:600;font-size:.95rem;cursor:pointer;}
+.login-error{color:var(--bad);font-size:.8rem;margin-top:8px;min-height:1em;}
+.login-note{font-family:var(--mono);font-size:.64rem;color:var(--muted);margin-top:18px;line-height:1.6;}
+.app{display:none;height:100vh;}
+.app.show{display:flex;}
+/* SIDEBAR */
+.menu{width:288px;min-width:240px;background:#fff;border-right:1px solid var(--line);padding:28px 20px 20px;overflow-y:auto;display:flex;flex-direction:column;}
+.brand{margin-bottom:22px;}
+.brand .mono{color:var(--ink-blue);display:block;margin-bottom:4px;}
+.brand h2{font-size:1.5rem;}
+.selectors{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.selectors label{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.selectors select{width:100%;padding:8px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:.8rem;}
+.course{margin-bottom:22px;}
+.course-name{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-weight:600;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-blue);margin-bottom:8px;}
+.course.locked .course-name{color:var(--muted);}
+.course-lockbadge{font-size:.58rem;color:var(--label);font-weight:500;}
+.unit{display:grid;grid-template-columns:22px 1fr 36px;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);padding:11px 8px;border-radius:0;font-size:.84rem;font-weight:500;color:var(--ink);cursor:pointer;}
+.course .unit:last-of-type{border-bottom:1px solid var(--line);}
+.unit .idx{font-family:var(--mono);font-size:.64rem;color:var(--label);}
+.unit .lbl{min-width:0;line-height:1.3;overflow-wrap:break-word;}
+.cnt{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;font-weight:400;color:var(--muted);margin-top:3px;}
+.unit:hover{background:var(--soft);}
+.unit.active{background:var(--ink-blue);color:#fff;border-radius:8px;border-color:transparent;}
+.unit.active .idx,.unit.active .cnt{color:rgba(255,255,255,.75);}
+.unit.active + .unit{border-top-color:transparent;}
+.ring-wrap{flex-shrink:0;}
+.rt{stroke:#DCE4FB;} .rf{stroke:var(--blue);} .rx{fill:var(--ink-blue);font-family:var(--mono);font-weight:600;}
+.unit.active .rt{stroke:rgba(255,255,255,.3);} .unit.active .rf{stroke:#fff;} .unit.active .rx{fill:#fff;}
+.no-content{font-size:.84rem;color:var(--gray);padding:6px 0;line-height:1.55;}
+.menu-footer{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.03em;color:var(--muted);word-break:break-all;}
+.menu-footer button{background:none;border:0;color:var(--ink-blue);font-family:var(--mono);font-size:.62rem;cursor:pointer;padding:0;text-decoration:underline;margin-top:6px;text-transform:uppercase;letter-spacing:.06em;}
+/* CENTER */
+.center{flex:1;min-width:0;overflow-y:auto;padding:48px 48px 72px;background:#fff;}
+.center > *{max-width:720px;margin-left:auto;margin-right:auto;}
+.qhero{margin-bottom:6px;}
+.qhero h1{font-size:clamp(2.4rem,5vw,3.6rem);margin:12px 0 10px;}
+.qhero .sub{font-size:1.05rem;color:var(--gray);margin:0;}
+.progress{margin:30px auto 22px;}
+.prow{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.prow .lead{color:var(--ink);}
+.strip{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;}
+.cell{aspect-ratio:1;border:1px solid var(--line);background:var(--soft);border-radius:3px;padding:0;cursor:pointer;}
+.cell:hover{border-color:var(--blue);}
+.cell.ok{background:var(--blue);border-color:var(--blue);}
+.cell.bad{background:var(--badline);border-color:#E58F8F;}
+.cell.cur{outline:2px solid var(--ink);outline-offset:1px;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+.seg button{background:#fff;border:0;border-right:1px solid var(--line);padding:8px 14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.07em;text-transform:uppercase;color:var(--gray);cursor:pointer;}
+.seg button:last-child{border-right:0;}
+.seg button.on{background:var(--ink-blue);color:#fff;}
+.tools{display:flex;gap:8px;}
+.qcard{position:relative;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:22px 26px 28px;margin-bottom:22px;}
+.qcard::after{content:"";position:absolute;left:36px;bottom:-7px;width:12px;height:12px;background:var(--soft);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg);}
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.qnum{font-family:var(--mono);font-weight:600;font-size:.8rem;letter-spacing:.05em;color:var(--ink-blue);}
+.tag{font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--node);color:var(--ink-blue);background:#fff;border-radius:4px;}
+.tag.diff-Medium{border-color:var(--ink-blue);}
+.tag.diff-Hard{background:var(--ink-blue);color:#fff;border-color:var(--ink-blue);}
+.qtopic{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.q-text{font-size:1.28rem;line-height:1.42;font-weight:500;letter-spacing:-.015em;}
+.opt{display:grid;grid-template-columns:30px 1fr 22px;gap:14px;align-items:center;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:8px;font-size:1rem;color:var(--ink);cursor:pointer;transition:background .12s,border-color .12s;}
+.ol{width:28px;height:28px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:.76rem;color:var(--muted);background:var(--soft);}
+.opt:hover{border-color:var(--node);background:#F9FAFF;}
+.opt.selected{border-color:var(--ink-blue);background:var(--soft);}
+.opt.selected .ol{background:var(--ink-blue);color:#fff;border-color:var(--ink-blue);}
+.opt.correct{background:var(--ink-blue);border-color:var(--ink-blue);color:#fff;}
+.opt.correct .ol{background:#fff;color:var(--ink-blue);border-color:#fff;}
+.opt.incorrect{background:var(--badbg);border-color:var(--badline);color:var(--bad);}
+.opt.incorrect .ol{background:var(--bad);color:#fff;border-color:var(--bad);}
+.opt:disabled{cursor:default;}
+.mk{font-weight:700;text-align:right;}
+.actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
+button.primary{background:var(--ink-blue);color:#fff;border:0;padding:13px 28px;border-radius:6px;font-weight:600;font-size:.95rem;cursor:pointer;}
+button.primary:hover{filter:brightness(1.07);}
+button.primary:disabled{background:var(--node);cursor:not-allowed;filter:none;}
+button.ghost{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:9px 16px;font-size:.85rem;cursor:pointer;}
+button.ghost.sm{padding:8px 12px;font-family:var(--mono);font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;}
+button.ghost:hover{border-color:var(--blue);}
+.feedback{margin-top:34px;padding-top:28px;border-top:1px solid var(--line);}
+.verdict{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1.6rem;letter-spacing:-.03em;margin-bottom:18px;flex-wrap:wrap;}
+.vi{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;color:#fff;}
+.verdict.ok{color:var(--ink-blue);} .verdict.ok .vi{background:var(--ink-blue);}
+.verdict.bad{color:var(--bad);} .verdict.bad .vi{background:var(--bad);}
+.verdict .dim{font-weight:500;font-size:1rem;letter-spacing:-.005em;}
+.reasoning{background:var(--ink-blue);color:#fff;border-radius:10px;padding:22px 26px;font-size:1.02rem;line-height:1.6;}
+.rlab{color:rgba(255,255,255,.75);margin-bottom:10px;}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap;}
+.source-cite{color:var(--muted);text-transform:none;letter-spacing:.02em;font-size:.66rem;flex:1;min-width:200px;line-height:1.5;}
+.soon .eyebrow{display:block;}
+.soon h1{font-size:2.4rem;margin:12px 0 28px;}
+.soonbox{border:1px dashed var(--node);border-radius:10px;padding:36px;color:var(--gray);}
+.soonbox .mono{display:block;color:var(--ink-blue);margin-bottom:8px;}
+.soonbox p{margin:0;}
+/* CHAT */
+.chat{width:340px;min-width:280px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;transition:width .2s;}
+.chat.collapsed{width:48px;min-width:48px;}
+.chat-head{display:flex;align-items:flex-start;justify-content:space-between;padding:26px 18px 16px;border-bottom:1px solid var(--line);}
+.chat-head .mono{display:block;color:var(--ink-blue);margin-bottom:4px;}
+.chat-head h2{font-size:1.25rem;}
+.chat.collapsed .chat-head{padding:18px 8px;justify-content:center;}
+.chat.collapsed .chat-head span,.chat.collapsed .chat-body{display:none;}
+.chat-toggle{background:none;border:1px solid var(--line);border-radius:6px;font-size:.9rem;cursor:pointer;color:var(--ink-blue);padding:4px 8px;}
+.chat-body{flex:1;display:flex;flex-direction:column;min-height:0;}
+.chat-hint{font-size:.78rem;color:var(--gray);padding:14px 18px 8px;line-height:1.5;}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px;}
+.msg{padding:11px 14px;border-radius:10px;font-size:.86rem;line-height:1.5;max-width:100%;}
+.msg.user{background:var(--ink-blue);color:#fff;align-self:flex-end;border-bottom-right-radius:2px;}
+.msg.bot{background:var(--soft);border:1px solid var(--line);color:var(--ink);align-self:flex-start;white-space:pre-wrap;border-bottom-left-radius:2px;}
+.msg.disclaimer{font-family:var(--mono);font-size:.64rem;color:var(--muted);background:none;border:0;border-top:1px dashed var(--node);border-radius:0;padding:8px 2px 0;white-space:normal;line-height:1.55;}
+.thinking{opacity:.6;font-style:italic;}
+.chat-input{display:flex;gap:8px;padding:14px 18px;border-top:1px solid var(--line);}
+.chat-input textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:.88rem;background:#fff;color:var(--ink);}
+.chat-input button{background:var(--ink-blue);color:#fff;border:0;border-radius:6px;padding:0 16px;cursor:pointer;font-weight:600;font-size:.85rem;}
+.cfg-toggle{margin:0 18px 8px;background:#fff;border:1px dashed var(--node);color:var(--ink-blue);border-radius:6px;padding:7px 10px;font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-align:left;}
+.cfg-box{margin:0 18px 10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--soft);font-size:.78rem;}
+.cfg-box label{display:block;font-family:var(--mono);font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:8px 0 3px;}
+.cfg-box input,.cfg-box select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);font-size:.8rem;}
+.cfg-box button{margin-top:10px;background:var(--ink-blue);color:#fff;border:0;border-radius:6px;padding:7px 12px;font-size:.78rem;cursor:pointer;}
+.cfg-box button.linkbtn{background:none;color:var(--bad);text-decoration:underline;}
+.cfg-note{font-size:.7rem;color:var(--muted);margin-top:8px;line-height:1.45;}
+/* MOBILE */
+.mbar,.scrim{display:none;}
+@media (max-width:900px){
+  .mbar{display:flex;position:fixed;top:0;left:0;right:0;height:52px;padding:0 12px;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line);z-index:20;}
+  .mbar button{background:none;border:1px solid var(--line);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-blue);}
+  .app{height:calc(100vh - 52px);margin-top:52px;}
+  .center{padding:26px 18px 56px;}
+  .menu{position:fixed;top:0;bottom:0;left:0;width:86%;max-width:320px;z-index:40;transform:translateX(-102%);transition:transform .22s;}
+  .menu.open{transform:none;box-shadow:6px 0 24px rgba(0,0,0,.15);}
+  .chat,.chat.collapsed{position:fixed;top:0;bottom:0;right:0;width:92%;max-width:380px;min-width:0;z-index:40;transform:translateX(102%);transition:transform .22s;}
+  .chat.open{transform:none;box-shadow:-6px 0 24px rgba(0,0,0,.15);}
+  .scrim.show{display:block;position:fixed;inset:0;background:rgba(27,28,33,.35);z-index:30;}
+  .strip{grid-template-columns:repeat(10,1fr);}
+  .kbd{display:none;}
+  .q-text{font-size:1.15rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <span class="eyebrow">CUHK MBChB · Year 2</span>
+    <h1>Thorax<br>Question Bank</h1>
+    <p>Sign in with your CUHK student email to continue.</p>
+    <label class="mono" for="loginEmail">Email</label>
+    <input type="email" id="loginEmail" placeholder="yourname@link.cuhk.edu.hk" autocomplete="email">
+    <button id="loginBtn">Continue →</button>
+    <div class="login-error" id="loginError"></div>
+    <div class="login-note">Prototype login — checks that your email is a CUHK address (@cuhk.edu.hk / @link.cuhk.edu.hk). Not a verified account system; no password or CUHK SSO is involved.</div>
+  </div>
+</div>
+
+<div class="mbar"><button id="mMenu">☰ Units</button><span class="mono">Thorax QBank</span><button id="mChat">Ask ✦</button></div>
+<div class="scrim" id="scrim"></div>
+
+<div class="app" id="appRoot">
+
+  <nav class="menu">
+    <div class="brand"><span class="mono">MBChB QBank</span><h2>Course Bank</h2></div>
+    <div class="selectors">
+      <div>
+        <label for="schoolSel">School</label>
+        <select id="schoolSel">
+          <option value="cuhk">CUHK</option>
+          <option value="hku">HKU</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="yearSel">Year group</label>
+        <select id="yearSel">
+          <option>Year 1</option>
+          <option selected>Year 2</option>
+          <option>Year 3</option>
+          <option>Year 4</option>
+          <option>Year 5</option>
+          <option>Year 6</option>
+        </select>
+      </div>
+    </div>
+    <div id="menuBody"></div>
+    <div class="menu-footer" id="menuFooter"></div>
+  </nav>
+
+  <main class="center" id="centerPanel"></main>
+
+  <aside class="chat" id="chatPanel">
+    <div class="chat-head">
+      <span><span class="mono">Assistant</span><h2>Concept Clarifier</h2></span>
+      <button class="chat-toggle" id="chatToggle" title="Collapse / expand">⟷</button>
+    </div>
+    <div class="chat-body">
+      <div class="chat-hint">Searches your uploaded thorax notes (works offline). Optional: add your own API key for AI explanations.</div>
+      <button class="cfg-toggle" id="cfgToggle">⚙ AI settings (optional)</button>
+      <div class="cfg-box" id="cfgBox" style="display:none;">
+        <label>Provider</label>
+        <select id="cfgProvider"><option value="anthropic">Anthropic (Claude)</option><option value="openai">OpenAI-compatible</option></select>
+        <label>API key</label>
+        <input type="password" id="cfgKey" placeholder="paste your own key">
+        <label>Model</label>
+        <input type="text" id="cfgModel" placeholder="e.g. claude-haiku-4-5-20251001">
+        <div id="cfgBaseWrap" style="display:none;"><label>Base URL</label><input type="text" id="cfgBase" placeholder="https://api.openai.com/v1"></div>
+        <button id="cfgSave">Save</button> <button id="cfgClear" class="linkbtn">Remove key</button>
+        <div class="cfg-note">Stored only in this browser and sent only to the provider you choose. Don't use on shared computers.</div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg bot">Hi! Ask about any thorax topic and I'll pull the matching entries from your uploaded notes. After answering a question, tap “Show related notes”.</div>
+      </div>
+      <div class="chat-input">
+        <textarea id="chatInput" rows="1" placeholder="Ask a question…"></textarea>
+        <button id="chatSend">Send</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+const QUESTIONS = [{"id": 1, "topic": "Chest-arm muscles \u2014 serratus anterior and long thoracic nerve", "difficulty": "Easy", "question": "A boxer sustains an injury during training and later notices that the medial border of his scapula protrudes posteriorly (\"winged scapula\") when he pushes against a wall. Which nerve is most likely damaged?", "options": {"A": "Medial pectoral nerve", "B": "Lateral pectoral nerve", "C": "Long thoracic nerve", "D": "Phrenic nerve", "E": "Intercostal nerve"}, "correct": "C", "explanation": "The serratus anterior (\"boxer's muscle\") protracts the scapula and is innervated by the long thoracic nerve (C5\u2013C7). Damage causes winged scapula, with the medial border of the scapula protruding posteriorly.", "source": "Document 1 \u2014 \"What is the serratus anterior and what happens if its nerve is damaged?\""}, {"id": 2, "topic": "Bony landmarks \u2014 vertebral levels of the thorax", "difficulty": "Easy", "question": "Which vertebral level corresponds to the xiphoid process?", "options": {"A": "T2", "B": "T4", "C": "T5", "D": "T9", "E": "T10"}, "correct": "D", "explanation": "Jugular notch = T2, sternal angle = T4, xiphoid process = T9. These surface landmarks help estimate vertebral level clinically.", "source": "Document 1 \u2014 \"What vertebral levels correspond to the jugular notch, sternal angle, and xiphoid process?\""}, {"id": 3, "topic": "Pleural recesses and pleural cavity disorders", "difficulty": "Medium", "question": "In a patient with a large pleural effusion, fluid characteristically accumulates first in which potential space?", "options": {"A": "Transverse pericardial sinus", "B": "Costomediastinal recess", "C": "Costodiaphragmatic recess", "D": "Oblique pericardial sinus", "E": "Cardiac notch"}, "correct": "C", "explanation": "The costodiaphragmatic recess (between costal and diaphragmatic pleurae) is a dependent potential space where fluid, air, or blood accumulate in hydrothorax, pneumothorax, and hemothorax respectively.", "source": "Document 2 \u2014 \"What are pleural recesses and why are they important?\""}, {"id": 4, "topic": "Structural differences between right and left lungs", "difficulty": "Easy", "question": "Which structure allows the pericardium and heart to project into the thoracic cavity without lung interference?", "options": {"A": "Horizontal fissure of the right lung", "B": "Lingula of the left lung", "C": "Cardiac notch of the left lung", "D": "Oblique fissure of the right lung", "E": "Azygos impression on the right lung"}, "correct": "C", "explanation": "The left lung has 2 lobes, one oblique fissure, a cardiac notch (related to the heart), and a lingula on its upper lobe.", "source": "Document 2 \u2014 \"How do the right and left lungs differ?\""}, {"id": 5, "topic": "Root (hilum) of the lung \u2014 phrenic and vagus nerve relations", "difficulty": "Medium", "question": "During lung surgery, a nerve is identified immediately anterior to the root of the lung. Which nerve is this, and what is its function?", "options": {"A": "Vagus nerve; parasympathetic innervation to thoracic viscera", "B": "Phrenic nerve; motor and sensory innervation to the diaphragm", "C": "Recurrent laryngeal nerve; innervates the larynx", "D": "Splanchnic nerve; innervates abdominal viscera", "E": "Intercostal nerve; innervates the thoracic wall"}, "correct": "B", "explanation": "The phrenic nerve (C3\u20135) passes anterior to the root of the lung and supplies the diaphragm (motor and sensory). The vagus passes posterior to the root and supplies parasympathetic fibres to thoracic viscera.", "source": "Document 2 \u2014 \"What is the relationship of the phrenic and vagus nerves to the root of the lung?\""}, {"id": 6, "topic": "Bronchopulmonary segments and surgical significance", "difficulty": "Medium", "question": "A localized lung tumour confined to a single bronchopulmonary segment is being evaluated for surgery. Why can segmental resection be performed without removing the entire lobe?", "options": {"A": "Each segment is supplied by the pulmonary veins only, which regenerate quickly", "B": "Each segment has an independent segmental (tertiary) bronchus and segmental artery", "C": "Bronchopulmonary segments share a single blood supply that can be ligated selectively", "D": "Segments have no nerve supply, making surgery risk-free", "E": "Segments are separated by complete fissures like lobes"}, "correct": "B", "explanation": "Each bronchopulmonary segment has its own segmental (tertiary) bronchus and segmental artery, making independent surgical removal possible.", "source": "Document 2 \u2014 \"What are bronchopulmonary segments?\""}, {"id": 7, "topic": "Conducting system of the heart \u2014 moderator band", "difficulty": "Hard", "question": "Which structure in the right ventricle carries part of the cardiac conducting system?", "options": {"A": "Chordae tendineae", "B": "Trabeculae carneae", "C": "Moderator band (septomarginal trabecula)", "D": "Infundibulum", "E": "Crista terminalis"}, "correct": "C", "explanation": "The moderator band (septomarginal trabecula) of the right ventricle carries the right bundle branch of the conducting system.", "source": "Document 3 \u2014 \"What are the features of the right ventricle?\" / \"Describe the conducting system of the heart.\""}, {"id": 8, "topic": "Pericardial sinuses", "difficulty": "Hard", "question": "During cardiac surgery, a clamp is passed behind the aorta and pulmonary trunk but anterior to the atria. Which pericardial space allows this?", "options": {"A": "Oblique sinus", "B": "Transverse sinus", "C": "Costomediastinal recess", "D": "Costodiaphragmatic recess", "E": "Pericardial cavity proper"}, "correct": "B", "explanation": "The transverse pericardial sinus lies between the arterial end (aorta and pulmonary trunk) and venous end of the heart, allowing surgical access to the great arteries.", "source": "Document 3 \u2014 \"Describe the pericardium.\""}, {"id": 9, "topic": "Azygos system and esophageal venous plexus \u2014 portal hypertension", "difficulty": "Hard", "question": "A patient with liver cirrhosis and portal hypertension develops dilated, tortuous lower esophageal veins at risk of rupture. This results from an anastomosis between the hepatic portal vein and which venous system?", "options": {"A": "Internal thoracic vein", "B": "Azygos vein (via the esophageal venous plexus)", "C": "Superior vena cava directly", "D": "Inferior vena cava directly", "E": "Intercostal veins draining into the hemiazygos vein only"}, "correct": "B", "explanation": "The esophageal venous plexus anastomoses the hepatic portal vein and azygos vein; in portal hypertension, shunting through these veins causes esophageal varices, which can rupture fatally.", "source": "Document 3 \u2014 \"What is the clinical significance of the esophageal venous plexus?\""}, {"id": 10, "topic": "Splanchnic nerves \u2014 segmental origin", "difficulty": "Medium", "question": "The greater splanchnic nerve arises from which spinal cord segments?", "options": {"A": "T1\u2013T4", "B": "T5\u2013T9", "C": "T10\u2013T11", "D": "T12 only", "E": "L1\u2013L2"}, "correct": "B", "explanation": "Greater splanchnic nerve = T5\u2013T9; lesser splanchnic nerve = T10\u2013T11; least splanchnic nerve = T12.", "source": "Document 3 \u2014 \"What are the splanchnic nerves?\""}, {"id": 11, "topic": "Bony landmarks \u2014 sternal angle (angle of Louis)", "difficulty": "Easy", "question": "A clinician palpates a horizontal ridge on the anterior chest wall to begin counting ribs. This landmark marks the joint between which two structures, and lies at which vertebral level?", "options": {"A": "T2; manubrium and clavicle", "B": "T4; manubrium and body of sternum", "C": "T9; body of sternum and xiphoid process", "D": "T4; costal cartilage and rib", "E": "T2; jugular notch and manubrium"}, "correct": "B", "explanation": "The sternal angle (angle of Louis) is the manubriosternal joint, joined by the 2nd rib, lying at T4/5. The trachea bifurcates and the aortic arch lies posterior to it.", "source": "Document 1 \u2014 \"What is the sternal angle (angle of Louis) and why is it clinically important?\""}, {"id": 12, "topic": "Classification of ribs", "difficulty": "Easy", "question": "Which of the following correctly describes the attachment of ribs 11 and 12?", "options": {"A": "They attach directly to the sternum via their own costal cartilage", "B": "They attach indirectly via the costal cartilage of the rib above", "C": "They have no anterior attachment to the sternum", "D": "They attach to the manubrium only", "E": "They attach to the xiphoid process"}, "correct": "C", "explanation": "Ribs 11 and 12 are floating ribs with no anterior sternal attachment, unlike true ribs (1\u20137, direct) and false ribs (8\u201310, indirect).", "source": "Document 1 \u2014 \"How are the 12 ribs classified?\""}, {"id": 13, "topic": "Intercostal neurovascular bundle and thoracentesis", "difficulty": "Medium", "question": "During thoracentesis, why is a needle inserted close to the superior margin of the lower rib in an intercostal space?", "options": {"A": "To avoid puncturing the diaphragm", "B": "To avoid the VAN bundle in the costal groove along the inferior border of the rib above", "C": "To pass through the sternal angle", "D": "To avoid the azygos vein directly", "E": "To eliminate risk of pneumothorax entirely"}, "correct": "B", "explanation": "The intercostal neurovascular (VAN) bundle runs in the costal groove along the inferior border of each rib; needle placement near the superior border of the rib below avoids it.", "source": "Document 1 \u2014 \"Where should you insert a needle during thoracentesis and why?\""}, {"id": 14, "topic": "Breast lymphatic drainage and clinical significance", "difficulty": "Medium", "question": "A tumour in the upper outer quadrant of the breast most commonly drains to which lymph nodes, and why is this significant?", "options": {"A": "Inguinal nodes; lowest incidence of cancer here", "B": "Axillary lymph nodes; highest incidence of breast cancer (58%) occurs here", "C": "Internal thoracic nodes only", "D": "Clavicular nodes, bypassing axillary nodes", "E": "Para-aortic nodes via abdominal communication"}, "correct": "B", "explanation": "About 75% of breast lymph drains to axillary nodes; the upper outer quadrant has the highest incidence of breast cancer (58%) and drains primarily there.", "source": "Document 1 \u2014 \"Why is the lymphatic drainage of the breast clinically important?\""}, {"id": 15, "topic": "Bronchial tree anatomy \u2014 right vs left bronchus", "difficulty": "Medium", "question": "A child inhales a small foreign object. It is most likely to lodge in which structure, and why?", "options": {"A": "Left main bronchus, because it is longer and more horizontal", "B": "Right main bronchus, because it is wider, shorter, and more vertical", "C": "Trachea, because bifurcation occurs at T8", "D": "Left main bronchus, because it enters the lung root at a higher level", "E": "Right main bronchus, because it is narrower than the left"}, "correct": "B", "explanation": "The right main bronchus is wider, shorter, and more vertical than the left, entering the lung root at T5 (vs T6 on the left), making foreign body aspiration more likely on the right.", "source": "Document 2 \u2014 \"How do the right and left bronchi differ and why does this matter clinically?\""}, {"id": 16, "topic": "Diaphragm hiatuses and their contents", "difficulty": "Hard", "question": "A posterior mediastinal mass compresses the diaphragm at the T10 vertebral level. Which structures are most likely affected?", "options": {"A": "Inferior vena cava and right phrenic nerve", "B": "Descending aorta, thoracic duct, and splanchnic nerves", "C": "Esophagus and vagus nerve", "D": "Azygos vein and left phrenic nerve", "E": "Aortic arch and left recurrent laryngeal nerve"}, "correct": "C", "explanation": "The esophageal hiatus (T10) transmits the esophagus and vagus nerve. Mnemonic: \"I 8 10 EGGs AT 12\" (IVC at T8, Esophagus at T10, Aorta at T12).", "source": "Document 2 \u2014 \"What are the three openings (hiatuses) of the diaphragm and what passes through each?\""}, {"id": 17, "topic": "Pleural cavity disorders \u2014 tension pneumothorax", "difficulty": "Hard", "question": "A trauma patient develops progressive dyspnea, hypotension, and cyanosis after a penetrating chest injury, with mediastinal shift on exam. What is the mechanism?", "options": {"A": "Hydrothorax from tuberculosis", "B": "Hemothorax with no mediastinal effect", "C": "Tension pneumothorax \u2014 continuously escaping air collapses the lung and compresses mediastinal structures, reducing venous return and cardiac output", "D": "Pleuritis secondary to subphrenic abscess", "E": "Simple pneumothorax with no hemodynamic compromise"}, "correct": "C", "explanation": "In tension pneumothorax, air continuously escapes, collapsing the lung and compressing mediastinal structures, reducing venous return/cardiac output and risking shock.", "source": "Document 2 \u2014 \"What is tension pneumothorax?\""}, {"id": 18, "topic": "Referred pain \u2014 angina pectoris", "difficulty": "Hard", "question": "A patient with angina reports pain radiating down the inner left arm. What is the anatomical basis?", "options": {"A": "Direct compression of the brachial plexus by the enlarged heart", "B": "Cardiac sympathetic sensory fibers (T1\u2013T4) share spinal cord segments with somatic T1\u20134 dermatome fibers of the inner arm; the brain misinterprets the visceral signal", "C": "The phrenic nerve directly innervates the arm", "D": "The vagus nerve refers pain to the arm via parasympathetic fibers", "E": "The left recurrent laryngeal nerve is compressed"}, "correct": "B", "explanation": "Cardiac sympathetic sensory fibers (T1\u20134) converge on spinal segments shared with T1\u20134 dermatomes of the inner arm, producing referred pain.", "source": "Document 3 \u2014 \"What is referred pain in the context of angina pectoris?\""}, {"id": 19, "topic": "Coronary blood flow timing", "difficulty": "Medium", "question": "Coronary artery filling occurs primarily during which phase of the cardiac cycle?", "options": {"A": "Ventricular systole, when the aortic valve is open", "B": "Ventricular diastole, when the aortic valve cusps close and blood fills the aortic sinuses", "C": "Atrial systole only", "D": "Isovolumetric contraction", "E": "Rapid ventricular ejection"}, "correct": "B", "explanation": "Coronary blood flow occurs mainly during diastole, when the closed aortic valve cusps allow blood in the aortic sinuses to enter the coronary ostia.", "source": "Document 3 \u2014 \"When does coronary blood flow primarily occur?\""}, {"id": 20, "topic": "Recurrent laryngeal nerve course and clinical significance", "difficulty": "Hard", "question": "A patient with lung cancer develops hoarseness due to enlarged lymph nodes compressing a nerve near the aortic arch. Which nerve, and what is its course?", "options": {"A": "Right recurrent laryngeal nerve, hooking around the right subclavian artery", "B": "Left recurrent laryngeal nerve, hooking inferior to the aortic arch, posterior to the ligamentum arteriosum", "C": "Phrenic nerve, anterior to the lung root", "D": "Vagus trunk, compressed at the esophageal hiatus", "E": "Left recurrent laryngeal nerve, hooking around the right subclavian artery"}, "correct": "B", "explanation": "The left recurrent laryngeal nerve branches from the left vagus, hooks inferior to the aortic arch and posterior to the ligamentum arteriosum; compression by mediastinal masses/nodes causes hoarseness.", "source": "Document 3 \u2014 \"Describe the vagus nerves and recurrent laryngeal nerves in the thorax.\""}, {"id": 21, "topic": "Special features of the 1st rib", "difficulty": "Easy", "question": "Which feature is characteristic of the 1st rib?", "options": {"A": "It is the longest and thinnest rib", "B": "It has grooves for the subclavian artery and vein, and a tubercle for scalenus anterior", "C": "It attaches to the sternum indirectly via the rib above", "D": "It has no costal groove", "E": "It is classified as a floating rib"}, "correct": "B", "explanation": "The 1st rib is short, flat, and broad, with grooves for the subclavian artery and vein and a tubercle for the attachment of scalenus anterior.", "source": "Document 1 \u2014 \"What is special about the 1st rib?\""}, {"id": 22, "topic": "Thoracic segment and spinal nerve distribution", "difficulty": "Medium", "question": "A thoracic segment is best defined as which combination of structures?", "options": {"A": "A rib plus its costal cartilage", "B": "A thoracic vertebra plus 2 ribs plus sternum", "C": "An intercostal space plus its neurovascular bundle", "D": "A dermatome plus a myotome", "E": "The sternum plus manubrium and xiphoid process"}, "correct": "B", "explanation": "A thoracic segment = a thoracic vertebra + 2 ribs + sternum. Spinal nerves follow the course of the 12 thoracic segments to innervate corresponding dermatomes and myotomes.", "source": "Document 1 \u2014 \"What is a thoracic segment?\""}, {"id": 23, "topic": "Dermatomes", "difficulty": "Easy", "question": "How is a dermatome best defined?", "options": {"A": "A muscle innervated by a single spinal nerve root", "B": "An area of skin innervated by sensory nerves derived from a single spinal nerve root", "C": "A vertebral segment containing one spinal nerve", "D": "The area of skin supplied by a single peripheral nerve only", "E": "A region of bone supplied by a single artery"}, "correct": "B", "explanation": "A dermatome is an area of skin innervated by sensory nerve fibres from a single spinal nerve root.", "source": "Document 1 \u2014 \"What is a dermatome?\""}, {"id": 24, "topic": "Movements of the thoracic cage during respiration", "difficulty": "Medium", "question": "The \"bucket-handle\" movement of the ribs during inspiration refers to which motion?", "options": {"A": "Upward and forward movement of ribs and sternum together", "B": "Upward and outward movement of the ribs", "C": "Flattening of the diaphragm dome", "D": "Downward and inward movement of the ribs", "E": "Rotation of the vertebral column"}, "correct": "B", "explanation": "During inspiration, ribs move upward and outward (bucket-handle movement), the ribs and sternum move upward and forward, and the diaphragm flattens \u2014 all increasing thoracic volume.", "source": "Document 1 \u2014 \"What are the movements of the thoracic cage during respiration?\""}, {"id": 25, "topic": "Layers of intercostal muscles", "difficulty": "Easy", "question": "From superficial to deep, what is the correct order of the intercostal muscle layers?", "options": {"A": "Internal, innermost, external", "B": "External, internal, innermost", "C": "Innermost, external, internal", "D": "External, innermost, internal", "E": "Internal, external, innermost"}, "correct": "B", "explanation": "From superficial to deep: external intercostal, internal intercostal, innermost intercostal \u2014 all innervated by intercostal nerves.", "source": "Document 1 \u2014 \"What are the three layers of intercostal muscles?\""}, {"id": 26, "topic": "Intercostal neurovascular bundle (VAN) arrangement", "difficulty": "Medium", "question": "In the costal groove, what is the correct order of structures from superior to inferior?", "options": {"A": "Nerve, Artery, Vein", "B": "Artery, Vein, Nerve", "C": "Vein, Artery, Nerve", "D": "Vein, Nerve, Artery", "E": "Nerve, Vein, Artery"}, "correct": "C", "explanation": "VAN = Vein, Artery, Nerve, arranged from superior to inferior in the costal groove on the inferior border of each rib.", "source": "Document 1 \u2014 \"What is the intercostal neurovascular bundle and what is VAN?\""}, {"id": 27, "topic": "Arterial supply of the thoracic wall \u2014 internal thoracic artery", "difficulty": "Medium", "question": "At what level does the internal thoracic artery terminate, and into what does it divide?", "options": {"A": "2nd intercostal space; into the anterior and posterior intercostal arteries", "B": "6th intercostal space; into the superior epigastric and musculophrenic arteries", "C": "4th intercostal space; into bronchial and pericardial arteries", "D": "1st intercostal space; into subclavian and axillary arteries", "E": "6th intercostal space; into the internal and external iliac arteries"}, "correct": "B", "explanation": "The internal thoracic artery (a branch of the subclavian artery) gives rise to anterior intercostal arteries and terminates at the 6th intercostal space, dividing into the superior epigastric and musculophrenic arteries.", "source": "Document 1 \u2014 \"What arteries supply the thoracic wall?\""}, {"id": 28, "topic": "Surface anatomy \u2014 mid-clavicular line", "difficulty": "Easy", "question": "Which anterior surface line is used to locate the apex of the heart?", "options": {"A": "Sternal line", "B": "Parasternal line", "C": "Mid-clavicular line", "D": "Anterior axillary line", "E": "Posterior midline"}, "correct": "C", "explanation": "The mid-clavicular line is an anterior surface line of the thorax where the apex of the heart is classically found (5th intercostal space).", "source": "Document 1 \u2014 \"What are the anterior surface lines of the thorax?\""}, {"id": 29, "topic": "Blood supply of the female breast", "difficulty": "Medium", "question": "Which of the following is NOT a source of arterial blood supply to the breast?", "options": {"A": "Intercostal arteries", "B": "Internal thoracic artery", "C": "Lateral thoracic artery", "D": "Long thoracic nerve", "E": "Branches from the axillary artery"}, "correct": "D", "explanation": "Breast blood supply comes from intercostal arteries, the internal thoracic artery, and the lateral thoracic artery (a branch of the axillary artery). The long thoracic nerve is a nerve, not a blood vessel, and supplies serratus anterior.", "source": "Document 1 \u2014 \"What are the components and blood supply of the female breast?\""}, {"id": 30, "topic": "Superior mediastinum contents", "difficulty": "Medium", "question": "Which structure is found in the superior mediastinum?", "options": {"A": "Pericardium and heart", "B": "Descending aorta and thoracic duct", "C": "Aortic arch, brachiocephalic vessels, trachea, and thymus", "D": "Azygos and hemiazygos veins only", "E": "Sympathetic trunk and splanchnic nerves"}, "correct": "C", "explanation": "The superior mediastinum (above T4) contains the thymus, great vessels (aortic arch, brachiocephalic trunk, common carotid and subclavian arteries, brachiocephalic veins, SVC), trachea and main bronchi, phrenic and vagus nerves, and the left recurrent laryngeal nerve.", "source": "Document 3 \u2014 \"What are the four divisions of the mediastinum and what do they contain?\""}, {"id": 31, "topic": "Subtypes of parietal pleura", "difficulty": "Easy", "question": "Which subtype of parietal pleura lines the ribs and chest wall?", "options": {"A": "Mediastinal pleura", "B": "Diaphragmatic pleura", "C": "Costal pleura", "D": "Visceral pleura", "E": "Cervical pleura"}, "correct": "C", "explanation": "Parietal pleura has three subtypes: costal pleura (ribs/chest wall), mediastinal pleura (mediastinum), and diaphragmatic pleura (diaphragm).", "source": "Document 2 \u2014 \"What are the subtypes of parietal pleura?\""}, {"id": 32, "topic": "Causes of pleuritis", "difficulty": "Medium", "question": "Which of the following is a recognized cause of pleuritis leading to pleural effusion?", "options": {"A": "Subphrenic abscess", "B": "Fossa ovalis patency", "C": "Cardiac notch enlargement", "D": "Bucket-handle rib movement", "E": "Costal groove narrowing"}, "correct": "A", "explanation": "Pleuritis (inflammation of the pleura) can result from pulmonary infection, penetrating wounds, pericarditis, and subphrenic abscess, causing excess tissue fluid (pleural effusion) in the pleural recesses.", "source": "Document 2 \u2014 \"What is pleuritis?\""}, {"id": 33, "topic": "Structural features of the lungs \u2014 apex/cupula", "difficulty": "Easy", "question": "The apex (cupula) of the lung extends into which region?", "options": {"A": "The abdominal cavity", "B": "Above the 1st rib into the root of the neck", "C": "Below the diaphragm", "D": "Into the costodiaphragmatic recess", "E": "Into the mediastinum"}, "correct": "B", "explanation": "The apex (cupula) of the lung extends above the 1st rib into the root of the neck, one of the key structural features of the lung along with the base, root/hilum, surfaces, borders, and fissures.", "source": "Document 2 \u2014 \"What are the structural features of the lungs?\""}, {"id": 34, "topic": "Bronchial tree branching order", "difficulty": "Medium", "question": "What is the correct sequence of airway branching from the trachea?", "options": {"A": "Trachea \u2192 tertiary bronchi \u2192 secondary bronchi \u2192 primary bronchi \u2192 bronchioles", "B": "Trachea \u2192 primary bronchi \u2192 secondary bronchi \u2192 tertiary bronchi \u2192 bronchioles \u2192 alveolar sacs", "C": "Trachea \u2192 bronchioles \u2192 primary bronchi \u2192 alveolar sacs", "D": "Trachea \u2192 segmental bronchi \u2192 lobar bronchi \u2192 main bronchi", "E": "Trachea \u2192 alveolar sacs \u2192 bronchioles \u2192 bronchi"}, "correct": "B", "explanation": "Correct order: trachea \u2192 primary (main) bronchi \u2192 secondary (lobar) bronchi \u2192 tertiary (segmental) bronchi \u2192 bronchioles (terminal and respiratory) \u2192 alveolar sacs.", "source": "Document 2 \u2014 \"Describe the bronchial tree.\""}, {"id": 35, "topic": "Pulmonary vs bronchial arteries", "difficulty": "Medium", "question": "What is the functional difference between pulmonary and bronchial arteries?", "options": {"A": "Pulmonary arteries are nutritional; bronchial arteries are functional", "B": "Pulmonary arteries carry deoxygenated blood for gas exchange; bronchial arteries arise from the aorta and supply nutrition to lung tissue", "C": "Both arise from the descending aorta", "D": "Bronchial arteries carry oxygenated blood to the left atrium", "E": "Pulmonary arteries supply the bronchial walls and glands"}, "correct": "B", "explanation": "Pulmonary arteries are functional, carrying deoxygenated blood from the right ventricle for gas exchange. Bronchial arteries, arising from the descending aorta, are nutritional, supplying bronchial walls and glands.", "source": "Document 2 \u2014 \"What is the difference between pulmonary and bronchial arteries?\""}, {"id": 36, "topic": "Diaphragm asymmetry", "difficulty": "Easy", "question": "Why is the right dome of the diaphragm normally higher than the left?", "options": {"A": "Due to the position of the stomach", "B": "Due to the underlying liver", "C": "Due to the position of the spleen", "D": "Due to the heart's weight", "E": "Due to greater lung volume on the right"}, "correct": "B", "explanation": "The diaphragm has two domes (cupolas); the right dome is higher due to the underlying liver.", "source": "Document 2 \u2014 \"Describe the diaphragm.\""}, {"id": 37, "topic": "Right atrium \u2014 fossa ovalis", "difficulty": "Medium", "question": "The fossa ovalis, found on the interatrial septum of the right atrium, is a remnant of which fetal structure?", "options": {"A": "Ductus arteriosus", "B": "Ductus venosus", "C": "Foramen ovale", "D": "Umbilical vein", "E": "Sinus venosus"}, "correct": "C", "explanation": "The fossa ovalis is the remnant of the foramen ovale of the fetal heart, found on the atrial septum of the right atrium, along with the SA node, AV node, and tricuspid valve.", "source": "Document 3 \u2014 \"What are the features of the right atrium?\""}, {"id": 38, "topic": "Cardiac valve closure timing", "difficulty": "Hard", "question": "The tricuspid and mitral valves close during which phase, and what does this prevent?", "options": {"A": "Ventricular diastole; prevents backflow from arteries into ventricles", "B": "Ventricular systole; prevents backflow of blood into the atria", "C": "Atrial systole; prevents backflow into the great veins", "D": "Ventricular systole; prevents backflow from arteries into ventricles", "E": "Ventricular diastole; prevents backflow into the atria"}, "correct": "B", "explanation": "The tricuspid (right AV) and mitral (left AV) valves close during ventricular systole to prevent backflow into the atria; the pulmonary and aortic valves close during diastole to prevent backflow from the arteries.", "source": "Document 3 \u2014 \"What are the four heart valves and when does each close?\""}, {"id": 39, "topic": "Coronary arterial branches", "difficulty": "Hard", "question": "The posterior interventricular (posterior descending) artery is typically a branch of which coronary artery?", "options": {"A": "Left coronary artery, via the circumflex branch", "B": "Right coronary artery", "C": "Left anterior descending artery", "D": "Left marginal artery", "E": "SA nodal artery only"}, "correct": "B", "explanation": "The right coronary artery gives off the SA node artery, right marginal artery, posterior interventricular (posterior descending) artery, and AV nodal artery. The left coronary artery gives the anterior interventricular (LAD) and circumflex arteries (which give the left marginal artery).", "source": "Document 3 \u2014 \"Describe the coronary arterial supply.\""}, {"id": 40, "topic": "Thoracic duct pathway and drainage", "difficulty": "Medium", "question": "The thoracic duct begins as the cisterna chyli and enters the thorax through which structure, ultimately draining into which vein?", "options": {"A": "Esophageal hiatus; right subclavian vein", "B": "Aortic hiatus; left subclavian (or jugular) vein", "C": "Vena caval hiatus; right subclavian vein", "D": "Aortic hiatus; right subclavian vein", "E": "Esophageal hiatus; left subclavian vein"}, "correct": "B", "explanation": "The thoracic duct begins as the cisterna chyli (L2), enters the thorax via the aortic hiatus, ascends posterior to the esophagus between the thoracic aorta and azygos vein, and drains into the left subclavian or jugular vein, carrying lymph from the lower body, left thorax, left upper limb, and left head/neck.", "source": "Document 3 \u2014 \"Describe the thoracic duct.\""}];
+const SOURCE = "[DOCUMENT 1 - THORACIC WALL]\nQ: What are the bony landmarks of the thorax? A: Clavicle, jugular (suprasternal) notch (T2), manubrium, manubriosternal joint (sternal angle/angle of Louis, T4), body of sternum, xiphoid process (T9), costal cartilage, and costal margin.\nQ: What is the sternal angle (angle of Louis) and why is it clinically important? A: It's the manubriosternal joint where the manubrium meets the body of the sternum. Joined by the 2nd rib, lies at T4/5. Behind it lie the tracheal bifurcation and aortic arch. Key palpable landmark for counting ribs.\nQ: What vertebral levels correspond to the jugular notch, sternal angle, and xiphoid process? A: Jugular notch = T2, sternal angle = T4, xiphoid process = T9.\nQ: What are the anterior surface lines of the thorax? A: Anterior midline, sternal line, parasternal line (internal thoracic artery), mid-clavicular line (apex of heart).\nQ: What are the posterior surface lines of the thorax? A: Posterior midline, paravertebral line, scapular line.\nQ: What are the lateral surface lines/landmarks? A: Anterior axillary line/fold (pectoralis major), midaxillary line, posterior axillary line/fold (latissimus dorsi and teres major).\nQ: What makes up the thoracic cage? A: 12 pairs of ribs + sternum (manubrium + body + xiphoid). Functions: protection and respiratory movements.\nQ: How are the 12 ribs classified? A: True ribs (1-7, direct to sternum via costal cartilage); False ribs (8-10, indirect via cartilage of rib above); Floating ribs (11-12, no anterior attachment).\nQ: What are the parts of a typical rib? A: Head, neck, costal tubercle, costal angle, shaft (body), costal groove (VAN runs here, inferior surface).\nQ: What is special about the 1st rib? A: Short, flat, broad. Grooves for subclavian artery and vein, tubercle for scalenus anterior.\nQ: What is a thoracic segment? A: Thoracic vertebra + 2 ribs + sternum. Significant because spinal nerves follow thoracic segments (12 pairs) to innervate dermatomes and myotomes.\nQ: What is a dermatome? A: Area of skin innervated by sensory nerves from a single spinal nerve root.\nQ: What are the movements of the thoracic cage during respiration? A: Inspiration: (1) upward/outward rib movement (bucket-handle), (2) upward/forward rib+sternum movement, (3) flattening of diaphragm. Main muscles: diaphragm and intercostals.\nQ: What are the chest-arm muscles of the thoracic wall? A: Pectoralis major and minor. Movements of arm/scapula, innervated by medial and lateral pectoral nerves (brachial plexus).\nQ: What is the serratus anterior and what happens if its nerve is damaged? A: \"Boxer's muscle\", protracts scapula. Innervated by long thoracic nerve (C5-C7). Damage causes winged scapula (medial border protrudes posteriorly).\nQ: What are the three layers of intercostal muscles? A: External, internal, innermost intercostal (superficial to deep), all innervated by intercostal nerves. Transversus thoracis runs sternum to ribs on inner surface.\nQ: What arteries supply the thoracic wall? A: Posterior intercostal arteries (#3-12, from thoracic aorta), anterior intercostal arteries (from internal thoracic artery, from subclavian artery). Internal thoracic artery ends at 6th intercostal space, dividing into superior epigastric and musculophrenic arteries.\nQ: What is the intercostal neurovascular bundle and what is VAN? A: VAN = Vein, Artery, Nerve, superior to inferior, in costal groove. Intercostal vein drains to azygos/hemiazygos; arteries anterior+posterior; nerve from spinal nerve.\nQ: Where should you insert a needle during thoracentesis and why? A: Just above upper border of rib below the target space, avoiding VAN bundle in costal groove of rib above. Careful of diaphragm, liver (right), spleen (left).\nQ: What are the components and blood supply of the female breast? A: Glandular tissue, fibrous tissue, fat. Nipple/areola, lactiferous ducts, suspensory (Cooper's) ligaments, axillary tail. Blood supply: intercostal arteries, internal thoracic artery, lateral thoracic artery (from axillary artery).\nQ: Why is the lymphatic drainage of the breast clinically important? A: Breast cancer spreads via lymphatics. ~75% drains to axillary nodes, some to clavicular, internal thoracic, inguinal nodes. Upper outer quadrant has highest cancer incidence (58%), drains mainly to axillary nodes.\nQ: What are the divisions of the mediastinum? A: Superior mediastinum (above T4) and inferior mediastinum (anterior - thymus; middle - pericardium/heart; posterior).\nQ: Summarize the organization of the thorax. A: Thoracic vertebrae + ribs + sternum = thoracic cage. + intercostal muscles/vessels/nerves = thoracic wall. Thoracic cavity (inlet to diaphragm) contains mediastinum and 2 pleural cavities.\n\n[DOCUMENT 2 - PLEURA, LUNGS, DIAPHRAGM]\nQ: What are the pleurae? A: Visceral pleura (lung surface) and parietal pleura (thoracic wall), separated by pleural cavity with serous fluid. Meet at root (hilum) of lung.\nQ: What are the subtypes of parietal pleura? A: Costal pleura (ribs/chest wall), mediastinal pleura (mediastinum), diaphragmatic pleura (diaphragm).\nQ: What are pleural recesses and why are they important? A: Potential spaces (costodiaphragmatic, costomediastinal) since pleural cavity is larger than lung. Sites for air/fluid/blood accumulation in pneumothorax/hydrothorax/hemothorax.\nQ: What is pleuritis? A: Inflammation of pleura, causes excess tissue fluid (pleural effusion) in recesses. Causes: pulmonary infection, penetrating wounds, pericarditis, subphrenic abscess.\nQ: What are the structural features of the lungs? A: Apex (cupula, above 1st rib into neck root), base (diaphragmatic surface), root/hilum, costal and mediastinal surfaces, anterior/inferior/posterior borders, horizontal and oblique fissures.\nQ: How do the right and left lungs differ? A: Right: 3 lobes, 2 fissures (horizontal, oblique), impressions of SVC/azygos/esophagus. Left: 2 lobes, 1 oblique fissure, cardiac notch, lingula, impressions of aorta/esophagus.\nQ: What is the root (hilum) of the lung? A: Where pleurae meet (pulmonary ligament). Contains pulmonary arteries (superior), bronchi (intermediate), pulmonary veins (inferior). Located ~T5-7.\nQ: What is the relationship of the phrenic and vagus nerves to the root of the lung? A: Phrenic nerve (C3-5) anterior to root, innervates diaphragm. Vagus nerve (X) posterior to root, parasympathetic to thoracic viscera.\nQ: Describe the bronchial tree. A: Trachea -> primary bronchi -> secondary (lobar) bronchi -> tertiary (segmental) bronchi -> bronchioles (terminal/respiratory) -> alveolar sacs. Pulmonary vessels follow branching.\nQ: What are bronchopulmonary segments? A: Lobes subdivided into segments (~10 per lung). Each has segmental bronchus + segmental artery, independently supplied, allowing surgical segment removal.\nQ: How do the right and left bronchi differ and why does this matter clinically? A: Right bronchus wider, shorter, more vertical, enters at T5. Left narrower, longer, more horizontal, enters at T6. Foreign bodies more likely enter right bronchus.\nQ: At what level does the trachea bifurcate? A: T4, level of sternal angle.\nQ: What is the difference between pulmonary and bronchial arteries? A: Pulmonary arteries functional (deoxygenated blood RV->lungs for gas exchange, veins return oxygenated to LA). Bronchial arteries nutritional, from thoracic aorta, supply bronchial walls/glands.\nQ: Describe the lymphatic drainage of the chest and abdomen. A: Abdomen/lower limb -> cisterna chyli -> thoracic duct -> left subclavian vein. Right upper limb/thorax/head/neck -> right lymphatic duct -> right subclavian vein.\nQ: How do the lungs drain lymphatically? A: Peribronchial network -> tracheobronchial nodes -> paratracheal nodes -> bronchomediastinal trunks -> thoracic duct (left) or right lymphatic duct -> subclavian/jugular junction.\nQ: Why are tracheobronchial lymph nodes clinically significant? A: Enlarged nodes (lung cancer, metastasis) may compress structures incl. left recurrent laryngeal nerve, causing hoarseness.\nQ: What are the three types of pleural cavity disorders and their causes? A: Hemothorax (blood, trauma/ruptured vessels), hydrothorax (fluid, infection/TB/cancer), pneumothorax (air, lung/alveolar rupture or chest wall trauma).\nQ: What is tension pneumothorax? A: Air continuously escapes into pleural cavity, collapsing lung, compressing mediastinum (heart/great vessels). Symptoms: dyspnea, chest pain, cough, hypotension, cyanosis/hypoxia. Mediastinal shift reduces venous return/cardiac output, risk of shock.\nQ: Describe the diaphragm. A: Primary respiratory muscle, innervated by phrenic nerve (C3-5, motor+sensory). Two domes, right higher (liver). Peripheral muscular part + central tendon.\nQ: What are the three openings (hiatuses) of the diaphragm and what passes through each? A: Vena caval hiatus (T8/9) - IVC, right phrenic nerve. Esophageal hiatus (T10) - esophagus, vagus nerve. Aortic hiatus (T12/L1) - descending aorta, thoracic duct, splanchnic nerves, azygos vein. Mnemonic: I 8 10 EGGs AT 12.\n\n[DOCUMENT 3 - MEDIASTINUM AND HEART]\nQ: What are the four divisions of the mediastinum and what do they contain? A: Superior (above T4): thymus, great vessels (aortic arch, brachiocephalic trunk, carotids, subclavians, brachiocephalic veins, SVC), trachea/main bronchi, phrenic/vagus nerves, left recurrent laryngeal nerve. Anterior: thymus. Middle: pericardium, heart, roots of great vessels. Posterior: esophagus, descending aorta, azygos/hemiazygos veins, sympathetic trunk, splanchnic nerves, vagus nerve, thoracic duct.\nQ: Describe the pericardium. A: Fibrous pericardium (outer) + serous pericardium (visceral=epicardium, parietal). Pericardial cavity has lubricating fluid. Transverse sinus (between arterial/venous ends) and oblique sinus (behind left atrium). Limited room to expand.\nQ: What is the surface projection of the heart? A: Right border: SVC, RA, IVC. Left border: LV, apex. Anterior surface mostly RV. Apex at 5th intercostal space, mid-clavicular line.\nQ: What are the borders and surfaces of the heart? A: Upper border = great vessel roots. Right border = SVC/RA/IVC. Left border = LV/apex. Inferior border = diaphragmatic surface. Anterior surface = RA, RV (mostly), LV. Posterior surface (base) = LA/RA, great vessel origins. Diaphragmatic surface = LV (mostly) + RV.\nQ: What are the general features of the atria? A: Receive blood from veins, thin walls, smooth venous components, auricles with pectinate muscles, thin atrial septum, AV valves as outlets (tricuspid right, mitral left).\nQ: What are the features of the right atrium? A: Receives SVC, IVC, coronary sinus. Auricle w/ pectinate muscles, crista terminalis, fossa ovalis (remnant of foramen ovale) on septum, SA node, AV node, tricuspid valve.\nQ: What are the features of the left atrium? A: Receives 4 pulmonary veins. Esophagus posterior. Auricle, mitral (bicuspid) valve.\nQ: What are the general features of the ventricles? A: Pumps. Thick muscular walls, trabeculae carneae, papillary muscles + chordae tendineae, inlet valves (tricuspid/mitral), outlet valves (pulmonary/aortic), thick interventricular septum.\nQ: What are the features of the right ventricle? A: Trabeculae carneae, papillary muscles/chordae tendineae, moderator band (septomarginal trabecula, carries right bundle), tricuspid valve (inlet), pulmonary valve (outlet), infundibulum.\nQ: What are the features of the left ventricle? A: Thickest wall of 4 chambers. Trabeculae carneae, papillary muscles/chordae tendineae, mitral valve (inlet), aortic valve (outflow).\nQ: What is the function of papillary muscles and chordae tendineae? A: Papillary muscles attach to AV valve margins via chordae tendineae; during systole they pull valve leaflets to prevent prolapse/regurgitation into atria.\nQ: What are the four heart valves and when does each close? A: Tricuspid + mitral close during ventricular systole (prevent atrial backflow). Pulmonary + aortic close during ventricular diastole (prevent arterial backflow). Coronary arteries originate from left/right aortic valve cusps.\nQ: Describe the coronary arterial supply. A: Both arise from aortic valve cusps. RCA: SA node artery, right marginal artery, posterior interventricular (posterior descending), AV nodal artery. LCA: anterior interventricular (LAD), circumflex artery (gives left marginal artery).\nQ: When does coronary blood flow primarily occur? A: Ventricular diastole, when aortic valve cusps close and blood fills aortic sinuses, pushing into coronary ostia.\nQ: How does the coronary venous system drain? A: Great/middle/small cardiac veins, oblique vein of LA, left posterior ventricular vein -> coronary sinus -> right atrium.\nQ: How is the heart innervated by the autonomic nervous system? A: Sympathetic (T1-L2/3, sympathetic trunk): increases contraction/rate, dilates coronary vessels. Parasympathetic (vagus X): decreases rate, constricts coronary arteries. Both act on SA/AV nodes.\nQ: Describe the conducting system of the heart. A: SA node (pacemaker, RA) -> atrial myocardium -> AV node (interatrial septum, near coronary sinus) -> bundle of His -> right/left bundle branches (right through moderator band) -> Purkinje fibers -> ventricular myocardium.\nQ: What is referred pain in the context of angina pectoris? A: Heart's sympathetic sensory fibers (T1-4) share spinal segments with somatic T1-4 dermatomes (inner left arm); brain misinterprets visceral pain as arm/chest skin pain. Other examples: diaphragm->C3-4 (shoulder), gall bladder->T7-8 right, stomach->T6-9 left, appendix->T10 right (periumbilical).\nQ: What are the splanchnic nerves? A: Branches of sympathetic trunk innervating abdominal/pelvic viscera. Greater (T5-9), lesser (T10-11), least (T12).\nQ: Describe the vagus nerves and recurrent laryngeal nerves in the thorax. A: Vagus gives parasympathetic branches to esophageal/cardiac/pulmonary plexuses. Right vagus -> right recurrent laryngeal nerve, hooks around right subclavian artery. Left vagus -> left recurrent laryngeal nerve, hooks inferior to aortic arch, posterior to ligamentum arteriosum. Both innervate larynx. Compression (mediastinal tumors/nodes) causes hoarseness.\nQ: What are the three constrictions of the esophagus? A: Upper/pharyngo-esophageal (C6), middle/thoracic (T4, crossing of left bronchus/aortic arch), lower/diaphragmatic (T10, esophageal hiatus). Clinically significant for caustic/foreign body injury sites.\nQ: What structures are related to or compress the esophagus? A: Left bronchus (anterior), aortic arch (left side), left atrium (anterior surface), right pulmonary veins.\nQ: Describe the azygos venous system. A: Azygos vein (right) drains to SVC. Hemiazygos + accessory hemiazygos (left) drain into azygos. Bypasses IVC as alternative pathway from lower body/posterior wall/thoracic organs.\nQ: What is the clinical significance of the esophageal venous plexus? A: Anastomosis between hepatic portal vein and azygos vein. Portal hypertension (e.g. cirrhosis) shunts blood through these veins causing esophageal varices; rupture causes fatal hemorrhage.\nQ: Describe the thoracic duct. A: Begins as cisterna chyli (L2), enters thorax via aortic hiatus, ascends in posterior mediastinum posterior to esophagus, between thoracic aorta (left) and azygos vein (right), joins left subclavian/jugular vein. Drains lower limbs, abdomen, pelvis, left thorax, left upper limb, left head/neck.\nQ: What does the right lymphatic duct drain? A: Right thorax, right upper limb, right head/neck. Drains into right subclavian vein.\n";
+const HUS_BLOCKS = [{"id": "thorax", "name": "Thorax & Cardiovascular/Respiratory Systems", "unlocked": true}, {"id": "abdomen", "name": "Abdomen & Digestive System", "unlocked": false}, {"id": "pelvis", "name": "Pelvis, Perineum & Urogenital System", "unlocked": false}, {"id": "msk", "name": "Musculoskeletal System", "unlocked": false}, {"id": "embryo", "name": "Embryonic Development", "unlocked": false}, {"id": "clinanat", "name": "Basic Clinical Anatomy", "unlocked": false}, {"id": "intpath", "name": "Integrative Pathology", "unlocked": false}, {"id": "radpath", "name": "Radiologic Pathology", "unlocked": false}];
+const DISCLAIMER = "⚠️ This includes AI-generated reasoning beyond the exact notes and has not been validated by faculty — please double-check against your lecture materials or a lecturer.";
+
+// --- LOGIN GATE ---
+function isCuhkEmail(email){
+  const e = email.trim().toLowerCase();
+  return /^[^\s@]+@([a-z0-9-]+\.)*cuhk\.edu\.hk$/.test(e);
+}
+function tryAutoLogin(){
+  try{
+    const saved = localStorage.getItem('cuhk_login_email');
+    if(saved && isCuhkEmail(saved)){ showApp(saved); }
+  }catch(e){}
+}
+function showApp(email){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appRoot').classList.add('show');
+  document.getElementById('menuFooter').innerHTML = 'Signed in — ' + email + '<br><button id="logoutBtn">Sign out</button>';
+  document.getElementById('logoutBtn').onclick = ()=>{
+    try{ localStorage.removeItem('cuhk_login_email'); }catch(e){}
+    location.reload();
+  };
+}
+document.getElementById('loginBtn').onclick = ()=>{
+  const email = document.getElementById('loginEmail').value;
+  const err = document.getElementById('loginError');
+  if(!isCuhkEmail(email)){
+    err.textContent = "Please use a CUHK email address (e.g. name@link.cuhk.edu.hk).";
+    return;
+  }
+  err.textContent = '';
+  try{ localStorage.setItem('cuhk_login_email', email.trim()); }catch(e){}
+  showApp(email.trim());
+  renderMenu();
+};
+document.getElementById('loginEmail').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){ document.getElementById('loginBtn').click(); }
+});
+
+let order = QUESTIONS.map((_,i)=>i);
+let idx = 0;
+let currentFilter = "all";
+let chatTurns = [];
+let activeUnit = null;
+
+function loadProgress(){
+  try{ return JSON.parse(localStorage.getItem('thorax_progress_v1')) || {attempted:{}, correct:{}}; }
+  catch(e){ return {attempted:{}, correct:{}}; }
+}
+function saveProgress(p){
+  try{ localStorage.setItem('thorax_progress_v1', JSON.stringify(p)); }catch(e){}
+}
+let progress = loadProgress();
+
+function progressStats(){
+  const attempted = Object.keys(progress.attempted).length;
+  const correct = Object.keys(progress.correct).length;
+  return {attempted, correct, total: QUESTIONS.length, pct: Math.round(100*attempted/QUESTIONS.length)};
+}
+
+function ringSVG(pct, size, txt){
+  size = size || 36;
+  const r = size/2 - 3, c = 2*Math.PI*r, off = c*(1-pct/100), m = size/2;
+  return '<svg class="ring-wrap" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'
+    + '<circle class="rt" cx="'+m+'" cy="'+m+'" r="'+r+'" fill="none" stroke-width="3.5"/>'
+    + (pct > 0 ? '<circle class="rf" cx="'+m+'" cy="'+m+'" r="'+r+'" fill="none" stroke-width="3.5" stroke-dasharray="'+c+'" stroke-dashoffset="'+off+'" stroke-linecap="round" transform="rotate(-90 '+m+' '+m+')"/>' : '')
+    + '<text class="rx" x="'+m+'" y="'+m+'" text-anchor="middle" dominant-baseline="central" font-size="9">'+(txt !== undefined ? txt : pct+'%')+'</text></svg>';
+}
+function updateRing(){
+  const st = progressStats();
+  const el = document.querySelector('.unit[data-unit="thorax"] .ring-wrap');
+  if(el) el.outerHTML = ringSVG(st.pct);
+  const c = document.querySelector('.unit[data-unit="thorax"] .cnt');
+  if(c) c.textContent = st.attempted + '/' + st.total + ' answered';
+}
+function selectionIsSupported(){
+  return document.getElementById('schoolSel').value === 'cuhk' && document.getElementById('yearSel').value === 'Year 2';
+}
+
+const pad = n => String(n).padStart(2,'0');
+function isMobile(){ return window.matchMedia('(max-width:900px)').matches; }
+function closeDrawers(){
+  document.querySelector('.menu').classList.remove('open');
+  document.getElementById('chatPanel').classList.remove('open');
+  document.getElementById('scrim').classList.remove('show');
+}
+function openChat(){
+  const c = document.getElementById('chatPanel');
+  c.classList.remove('collapsed');
+  if(isMobile()){ c.classList.add('open'); document.getElementById('scrim').classList.add('show'); }
+}
+document.getElementById('mMenu').onclick = ()=>{ document.querySelector('.menu').classList.add('open'); document.getElementById('scrim').classList.add('show'); };
+document.getElementById('mChat').onclick = openChat;
+document.getElementById('scrim').onclick = closeDrawers;
+
+function renderMenu(){
+  const menuBody = document.getElementById('menuBody');
+  if(!selectionIsSupported()){
+    menuBody.innerHTML = '<div class="no-content">No question bank has been uploaded yet for this school / year group. Switch to <b>CUHK — Year 2</b> to see the Human Structure (HUS) unit.</div>';
+    activeUnit = null; renderCenter(); return;
+  }
+  if(activeUnit === null) activeUnit = 'thorax';
+  const stats = progressStats();
+  let html = '<div class="course"><div class="course-name">HUS — Human Structure I</div>';
+  HUS_BLOCKS.forEach((b,i)=>{
+    const active = activeUnit === b.id ? 'active' : '';
+    const ring = b.id === 'thorax' ? ringSVG(stats.pct) : ringSVG(0, 36, '–');
+    const cnt = b.id === 'thorax' ? stats.attempted + '/' + stats.total + ' answered' : 'Coming soon';
+    html += '<button class="unit '+active+'" data-unit="'+b.id+'"><span class="idx">'+pad(i+1)+'</span><span class="lbl">'+b.name.replace('/','/<wbr>')+'<span class="cnt">'+cnt+'</span></span>'+ring+'</button>';
+  });
+  html += '</div>';
+  html += '<div class="course locked"><div class="course-name">HUF — Human Function <span class="course-lockbadge">locked</span></div></div>';
+  html += '<div class="course locked"><div class="course-name">MMG — Molecular Medicine &amp; Genetics <span class="course-lockbadge">locked</span></div></div>';
+  menuBody.innerHTML = html;
+  document.querySelectorAll('.unit[data-unit]').forEach(btn=>{
+    btn.onclick = ()=>{ if(activeUnit !== btn.dataset.unit){ activeUnit = btn.dataset.unit; renderMenu(); } closeDrawers(); };
+  });
+  renderCenter();
+}
+document.getElementById('schoolSel').onchange = renderMenu;
+document.getElementById('yearSel').onchange = renderMenu;
+
+let selected = null, answered = false;
+function filteredOrder(){ return order.filter(i => currentFilter==='all' || QUESTIONS[i].difficulty===currentFilter); }
+function syncSeg(){ document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on', x.dataset.f === currentFilter)); }
+function setFilter(f){ currentFilter = f; idx = 0; syncSeg(); renderQ(); }
+function jumpTo(id){
+  currentFilter = 'all'; syncSeg();
+  idx = order.findIndex(i=>QUESTIONS[i].id === id);
+  renderQ();
+  document.getElementById('centerPanel').scrollTo({top:0, behavior:'smooth'});
+}
+function nextQ(){
+  const list = filteredOrder();
+  if(!list.length) return;
+  idx = (idx+1) % list.length;
+  renderQ();
+  document.getElementById('centerPanel').scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderCenter(){
+  const center = document.getElementById('centerPanel');
+  if(selectionIsSupported() && activeUnit && activeUnit !== 'thorax'){
+    const i = HUS_BLOCKS.findIndex(x=>x.id === activeUnit), b = HUS_BLOCKS[i];
+    center.innerHTML = '<div class="soon"><span class="eyebrow">HUS · Unit '+pad(i+1)+'</span><h1>'+b.name+'</h1><div class="soonbox"><span class="mono">Coming soon</span><p>Questions for this unit haven\'t been added yet.</p></div></div>';
+    return;
+  }
+  if(!selectionIsSupported() || activeUnit !== 'thorax'){
+    center.innerHTML = '<div class="soon"><span class="eyebrow">No content</span><h1>Nothing here yet</h1><div class="soonbox"><p>Select <b>CUHK — Year 2 — HUS — Thorax</b> to start practising.</p></div></div>';
+    return;
+  }
+  center.innerHTML = `
+    <header class="qhero">
+      <span class="eyebrow">HUS · Human Structure I · Unit 01</span>
+      <h1>Thorax</h1>
+      <p class="sub">Cardiovascular &amp; Respiratory Systems</p>
+    </header>
+    <section class="progress">
+      <div class="prow"><span class="mono lead" id="progLabel"></span><span class="mono dim">Tap a square to jump</span></div>
+      <div class="strip" id="strip"></div>
+    </section>
+    <div class="toolbar">
+      <div class="seg" id="seg"><button data-f="all">All</button><button data-f="Easy">Easy</button><button data-f="Medium">Medium</button><button data-f="Hard">Hard</button></div>
+      <div class="tools"><button class="ghost sm" id="shuffleBtn">Shuffle</button><button class="ghost sm" id="resetBtn">Reset</button></div>
+    </div>
+    <section class="qwrap">
+      <div class="qcard">
+        <div class="qhead"><span class="qnum" id="qnum"></span><span class="tag" id="diffTag"></span></div>
+        <div class="qtopic" id="topicTag"></div>
+        <div class="q-text" id="qText"></div>
+      </div>
+      <div id="optsWrap"></div>
+      <div class="actions">
+        <button class="primary" id="submitBtn" disabled>Submit</button>
+        <button class="primary" id="nextBtn" style="display:none;">Next question →</button>
+        <span class="kbd mono dim">A–E select · ↵ submit / next</span>
+      </div>
+      <div class="feedback" id="feedback" style="display:none;">
+        <div class="verdict" id="verdict"></div>
+        <div class="reasoning"><div class="mono rlab">Explanation</div><div id="explainBody"></div></div>
+        <div class="foot"><span class="source-cite mono" id="sourceCite"></span><button class="ghost sm" id="askAiBtn">Show related notes →</button></div>
+      </div>
+    </section>`;
+  document.querySelectorAll('#seg button').forEach(b=>{ b.onclick = ()=>setFilter(b.dataset.f); });
+  document.getElementById('shuffleBtn').onclick = ()=>{ order = order.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]); idx = 0; renderQ(); };
+  document.getElementById('resetBtn').onclick = ()=>{ progress = {attempted:{}, correct:{}}; saveProgress(progress); renderMenu(); };
+  document.getElementById('submitBtn').onclick = submitAnswer;
+  document.getElementById('nextBtn').onclick = nextQ;
+  document.getElementById('askAiBtn').onclick = explainCurrent;
+  syncSeg();
+  renderQ();
+}
+
+function renderStrip(){
+  const el = document.getElementById('strip'); if(!el) return;
+  const list = filteredOrder();
+  const cur = list.length ? QUESTIONS[list[idx]].id : -1;
+  el.innerHTML = QUESTIONS.map(q=>{
+    const st = progress.attempted[q.id] ? (progress.correct[q.id] ? 'ok' : 'bad') : '';
+    return '<button class="cell '+st+(q.id === cur ? ' cur' : '')+'" data-id="'+q.id+'" title="Q'+pad(q.id)+'" aria-label="Question '+q.id+'"></button>';
+  }).join('');
+  el.querySelectorAll('.cell').forEach(c=>{ c.onclick = ()=>jumpTo(+c.dataset.id); });
+  const st = progressStats();
+  document.getElementById('progLabel').textContent = pad(st.attempted) + ' / ' + st.total + ' answered · ' + pad(st.correct) + ' correct';
+}
+
+function renderQ(){
+  const list = filteredOrder();
+  if(idx >= list.length) idx = 0;
+  const qText = document.getElementById('qText'), optsWrap = document.getElementById('optsWrap');
+  const submitBtn = document.getElementById('submitBtn'), nextBtn = document.getElementById('nextBtn');
+  if(!list.length){ qText.textContent = 'No questions match this filter.'; optsWrap.innerHTML = ''; submitBtn.disabled = true; return; }
+  const q = QUESTIONS[list[idx]];
+  answered = false; selected = null;
+  document.getElementById('qnum').textContent = 'Q' + pad(q.id) + ' / ' + QUESTIONS.length;
+  document.getElementById('topicTag').textContent = q.topic;
+  const dt = document.getElementById('diffTag'); dt.textContent = q.difficulty; dt.className = 'tag diff-' + q.difficulty;
+  qText.textContent = q.question;
+  optsWrap.innerHTML = '';
+  Object.keys(q.options).sort().forEach(letter=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt'; btn.dataset.letter = letter;
+    btn.innerHTML = '<span class="ol">'+letter+'</span><span class="ot"></span><span class="mk"></span>';
+    btn.querySelector('.ot').textContent = q.options[letter];
+    btn.onclick = ()=>pick(letter);
+    optsWrap.appendChild(btn);
+  });
+  submitBtn.disabled = true; submitBtn.style.display = 'inline-block';
+  nextBtn.style.display = 'none';
+  document.getElementById('feedback').style.display = 'none';
+  renderStrip();
+}
+
+function pick(letter){
+  if(answered) return;
+  document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('selected', o.dataset.letter === letter));
+  selected = letter;
+  document.getElementById('submitBtn').disabled = false;
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+}
+
+function submitAnswer(){
+  if(answered || selected === null) return;
+  answered = true;
+  const q = QUESTIONS[filteredOrder()[idx]];
+  progress.attempted[q.id] = true;
+  const ok = selected === q.correct;
+  if(ok) progress.correct[q.id] = true; else delete progress.correct[q.id];
+  saveProgress(progress);
+  document.querySelectorAll('.opt').forEach(o=>{
+    o.disabled = true; o.classList.remove('selected');
+    if(o.dataset.letter === q.correct){ o.classList.add('correct'); o.querySelector('.mk').textContent = '✓'; }
+    else if(o.dataset.letter === selected){ o.classList.add('incorrect'); o.querySelector('.mk').textContent = '✗'; }
+  });
+  const v = document.getElementById('verdict');
+  v.className = 'verdict ' + (ok ? 'ok' : 'bad');
+  v.innerHTML = ok ? '<span class="vi">✓</span>Correct' : '<span class="vi">✗</span>Incorrect <span class="dim">— correct answer is ' + q.correct + '</span>';
+  document.getElementById('explainBody').textContent = q.explanation;
+  document.getElementById('sourceCite').textContent = 'Source · ' + q.source;
+  document.getElementById('feedback').style.display = 'block';
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+  renderStrip(); updateRing();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target.tagName;
+  if(t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+  if(getComputedStyle(document.getElementById('loginScreen')).display !== 'none') return;
+  if(!document.getElementById('submitBtn')) return;
+  const k = e.key.toLowerCase();
+  if(!answered && k.length === 1 && 'abcde'.includes(k)){
+    if(document.querySelector('.opt[data-letter="'+k.toUpperCase()+'"]')){ pick(k.toUpperCase()); e.preventDefault(); }
+  }else if(e.key === 'Enter' && t !== 'BUTTON'){
+    if(!answered) submitAnswer(); else nextQ();
+    e.preventDefault();
+  }
+});
+
+// --- Concept Clarifier: offline notes search + optional AI via the user's own API key ---
+const chatMsgs = document.getElementById('chatMsgs');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const chatToggle = document.getElementById('chatToggle');
+const chatPanel = document.getElementById('chatPanel');
+chatToggle.onclick = ()=>{ if(isMobile()) closeDrawers(); else chatPanel.classList.toggle('collapsed'); };
+
+function addMsg(text, role){
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.textContent = text;
+  chatMsgs.appendChild(d);
+  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  return d;
+}
+function addDisclaimer(){
+  const d = document.createElement('div');
+  d.className = 'msg disclaimer';
+  d.textContent = DISCLAIMER;
+  chatMsgs.appendChild(d);
+  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+}
+
+// Notes index (built from the embedded lecture notes)
+const STOP = new Set(['the','and','what','are','is','of','to','in','for','how','why','does','with','between','that','this','its','can','which','from','about','explain','tell','difference','describe','give','list']);
+function toks(s){
+  return (s.toLowerCase().match(/[a-z0-9]+/g)||[]).filter(w=>w.length>2 && !STOP.has(w)).map(w=>w.length>3 ? w.replace(/s$/,'') : w);
+}
+const NOTES = [];
+(function(){
+  let doc = '';
+  SOURCE.split('\n').forEach(line=>{
+    const h = line.match(/^\[DOCUMENT (\d+) - (.+)\]/);
+    if(h){ doc = 'Doc ' + h[1] + ' — ' + h[2].toLowerCase(); return; }
+    if(line.startsWith('Q: ')){
+      const i = line.indexOf(' A: ');
+      if(i > 0){
+        const q = line.slice(3, i).trim(), a = line.slice(i+4).trim();
+        NOTES.push({doc, q, a, qt:new Set(toks(q)), at:new Set(toks(a))});
+      }
+    }
+  });
+})();
+function searchNotes(query, n){
+  const qt = toks(query);
+  return NOTES.map(e=>{ let s = 0; qt.forEach(t=>{ if(e.qt.has(t)) s += 3; else if(e.at.has(t)) s += 1; }); return {e, s}; })
+    .filter(x=>x.s > 0).sort((a,b)=>b.s - a.s).slice(0, n).map(x=>x.e);
+}
+function formatNotes(entries){
+  return entries.map(e=>'📖 ' + e.q + '  (' + e.doc + ')\n' + e.a).join('\n\n');
+}
+function notesForCurrent(){
+  const list = filteredOrder();
+  const q = QUESTIONS[list[idx]];
+  const heads = [...q.source.matchAll(/"([^"]+)"/g)].map(m=>m[1].trim().toLowerCase());
+  let hits = NOTES.filter(e=>heads.includes(e.q.toLowerCase()));
+  if(!hits.length) hits = searchNotes(q.question, 2);
+  return {q, hits};
+}
+
+// Optional AI (user's own key; calls the provider directly from the browser)
+function getCfg(){ try{ return JSON.parse(localStorage.getItem('qb_ai_cfg')) || {}; }catch(e){ return {}; } }
+function setCfg(c){ try{ localStorage.setItem('qb_ai_cfg', JSON.stringify(c)); }catch(e){} }
+function grounding(){
+  return "You are a study assistant for a CUHK Year 2 medical student, working from the thorax lecture notes below. "
+    + "Use these notes as your primary source. You MAY reason and interpret (connect ideas, explain mechanisms) when it helps, "
+    + "but clearly signal when you go beyond the notes. If something can't be answered from the notes or reasonable inference, say so rather than inventing facts. "
+    + "Be concise and use the anatomical terminology used in the notes.\n\n--- THORAX LECTURE NOTES ---\n" + SOURCE + "\n--- END NOTES ---";
+}
+async function callAI(cfg, messages){
+  if(cfg.provider === 'openai'){
+    const base = (cfg.base || 'https://api.openai.com/v1').replace(/\/$/, '');
+    const r = await fetch(base + '/chat/completions', {method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer ' + cfg.key},
+      body: JSON.stringify({model: cfg.model || 'gpt-4o-mini', messages: [{role:'system', content: grounding()}, ...messages]})});
+    const j = await r.json();
+    if(!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+    return j.choices[0].message.content;
+  }
+  const r = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',
+    headers:{'content-type':'application/json','x-api-key':cfg.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body: JSON.stringify({model: cfg.model || 'claude-haiku-4-5-20251001', max_tokens: 1000, system: grounding(), messages})});
+  const j = await r.json();
+  if(!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+  return j.content.map(c=>c.text || '').join('');
+}
+
+async function sendChat(text){
+  if(!text.trim()) return;
+  addMsg(text, 'user');
+  const cfg = getCfg();
+  if(cfg.key){
+    chatTurns.push({role:'user', content:text});
+    const el = addMsg('Thinking…', 'bot thinking');
+    try{
+      const out = await callAI(cfg, chatTurns);
+      chatTurns.push({role:'assistant', content: out});
+      el.classList.remove('thinking'); el.textContent = out;
+      addDisclaimer();
+    }catch(err){
+      chatTurns.pop();
+      el.classList.remove('thinking');
+      const hits = searchNotes(text, 2);
+      el.textContent = 'AI request failed (' + err.message + ').' + (hits.length ? '\n\nFrom your notes instead:\n\n' + formatNotes(hits) : '');
+    }
+    return;
+  }
+  const hits = searchNotes(text, 2);
+  addMsg(hits.length ? formatNotes(hits) : "I couldn't find that in your uploaded thorax notes. Try different keywords (e.g. “recurrent laryngeal nerve”, “coronary arteries”), or check your lecture slides.", 'bot');
+}
+function explainCurrent(){
+  const {q, hits} = notesForCurrent();
+  openChat();
+  if(getCfg().key){
+    sendChat('Explain, using the notes and clear reasoning, why the answer to this question is ' + q.correct + '. Question: ' + q.question + ' Options: ' + Object.keys(q.options).sort().map(k=>k + ') ' + q.options[k]).join('; '));
+  }else{
+    addMsg('Show notes for this question', 'user');
+    addMsg(formatNotes(hits) + '\n\n(Notes lookup only — add your own API key under ⚙ for AI explanations.)', 'bot');
+  }
+}
+
+// AI settings UI
+const cfgBox = document.getElementById('cfgBox');
+document.getElementById('cfgToggle').onclick = ()=>{ cfgBox.style.display = cfgBox.style.display === 'none' ? 'block' : 'none'; };
+function syncBase(){ document.getElementById('cfgBaseWrap').style.display = document.getElementById('cfgProvider').value === 'openai' ? 'block' : 'none'; }
+document.getElementById('cfgProvider').onchange = syncBase;
+(function(){ const c = getCfg(); if(c.provider) document.getElementById('cfgProvider').value = c.provider;
+  document.getElementById('cfgKey').value = c.key || ''; document.getElementById('cfgModel').value = c.model || ''; document.getElementById('cfgBase').value = c.base || ''; syncBase(); })();
+document.getElementById('cfgSave').onclick = ()=>{
+  setCfg({provider:document.getElementById('cfgProvider').value, key:document.getElementById('cfgKey').value.trim(),
+          model:document.getElementById('cfgModel').value.trim(), base:document.getElementById('cfgBase').value.trim()});
+  cfgBox.style.display = 'none';
+  addMsg(getCfg().key ? 'AI mode on — answers will use your API key (with a not-validated disclaimer).' : 'No key saved — using notes search only.', 'bot');
+};
+document.getElementById('cfgClear').onclick = ()=>{ setCfg({}); document.getElementById('cfgKey').value=''; addMsg('API key removed — using notes search only.', 'bot'); };
+
+chatSend.onclick = ()=>{ const v = chatInput.value; chatInput.value=''; sendChat(v); };
+chatInput.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); chatSend.onclick(); }
+});
+
+renderMenu();
+tryAutoLogin();
+</script>
+</body>
+</html>
