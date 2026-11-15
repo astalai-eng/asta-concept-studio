@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Asta — Concept Studio</title>
+<style>
+:root{color-scheme:light;--paper:#f7f7f4;--ink:#20201e;--muted:#777771;--line:#deded8}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Inter,Arial,sans-serif}
+main{max-width:1040px;margin:auto;padding:48px 28px 80px}
+header,footer{display:flex;justify-content:space-between;gap:20px;align-items:center}
+.mono{font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(48px,9vw,108px);font-weight:500;letter-spacing:-.075em;line-height:.96;max-width:760px;margin:110px 0 24px}
+.intro{max-width:480px;color:var(--muted);font-size:18px;margin-bottom:90px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+a.card{display:flex;min-height:230px;padding:24px;text-decoration:none;color:inherit;flex-direction:column;justify-content:space-between;border:1px solid var(--line);transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .3s}
+a.card:hover{transform:translateY(-5px);border-color:#8c8c84}
+.card h2{font-size:32px;font-weight:500;letter-spacing:-.05em;margin:24px 0 6px}
+.card p{margin:0;color:var(--muted);max-width:300px}
+.kapwa{background:#e8edf5}.once{background:#252522;color:#f2eee5!important;border-color:#252522!important}.once p,.once .mono{color:#c1beb5}.med{background:#e9e8e4}.dusty{background:#e2eee6}
+footer{border-top:1px solid var(--line);margin-top:80px;padding-top:18px}
+@media(max-width:640px){main{padding:28px 18px 56px}h1{margin-top:84px}.grid{grid-template-columns:1fr}.card{min-height:190px}}
+</style>
+</head>
+<body><main>
+<header><span class="mono">ASTA / CONCEPT STUDIO</span><span class="mono">INDEPENDENT PROJECTS</span></header>
+<h1>A space for ideas to become tangible.</h1>
+<p class="intro">A collection of app concepts and prototypes exploring care, connection, patient support and learning. Choose a project to explore its current prototype.</p>
+<section class="grid" aria-label="Prototype projects">
+<a class="card kapwa" href="./kapwa/"><span class="mono">01 / CARE</span><div><h2>Kapwa Care</h2><p>A multilingual caregiver concept for everyday care and follow-up.</p></div><span class="mono">OPEN PROTOTYPE ↗</span></a>
+<a class="card dusty" href="./dustykid/"><span class="mono">02 / PATIENT SUPPORT</span><div><h2>Dustykid® AI</h2><p>Research in progress — opening-screen reference only.</p></div><span class="mono">RESEARCH NOTE ↗</span></a>
+<a class="card once" href="./for-once/"><span class="mono">03 / CONNECTION</span><div><h2>For Once</h2><p>A prompt-led experience for conversation around a table.</p></div><span class="mono">OPEN PROTOTYPE ↗</span></a>
+<a class="card med" href="./med-study/"><span class="mono">04 / LEARNING</span><div><h2>Med Study</h2><p>A thorax revision question bank prototype.</p></div><span class="mono">OPEN PROTOTYPE ↗</span></a>
+</section>
+<footer><span class="mono">A PROJECT INDEX</span><span class="mono">LAST UPDATED 2026</span></footer>
+</main></body></html>
