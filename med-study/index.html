@@ -175,18 +175,6 @@ button.ghost:hover{border-color:var(--blue);}
 </head>
 <body>
 
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <span class="eyebrow">CUHK MBChB · Year 2</span>
-    <h1>Thorax<br>Question Bank</h1>
-    <p>Sign in with your CUHK student email to continue.</p>
-    <label class="mono" for="loginEmail">Email</label>
-    <input type="email" id="loginEmail" placeholder="yourname@link.cuhk.edu.hk" autocomplete="email">
-    <button id="loginBtn">Continue →</button>
-    <div class="login-error" id="loginError"></div>
-    <div class="login-note">Prototype login — checks that your email is a CUHK address (@cuhk.edu.hk / @link.cuhk.edu.hk). Not a verified account system; no password or CUHK SSO is involved.</div>
-  </div>
-</div>
 
 <div class="mbar"><button id="mMenu">☰ Units</button><span class="mono">Thorax QBank</span><button id="mChat">Ask ✦</button></div>
 <div class="scrim" id="scrim"></div>
@@ -259,42 +247,7 @@ const SOURCE = "[DOCUMENT 1 - THORACIC WALL]\nQ: What are the bony landmarks of 
 const HUS_BLOCKS = [{"id": "thorax", "name": "Thorax & Cardiovascular/Respiratory Systems", "unlocked": true}, {"id": "abdomen", "name": "Abdomen & Digestive System", "unlocked": false}, {"id": "pelvis", "name": "Pelvis, Perineum & Urogenital System", "unlocked": false}, {"id": "msk", "name": "Musculoskeletal System", "unlocked": false}, {"id": "embryo", "name": "Embryonic Development", "unlocked": false}, {"id": "clinanat", "name": "Basic Clinical Anatomy", "unlocked": false}, {"id": "intpath", "name": "Integrative Pathology", "unlocked": false}, {"id": "radpath", "name": "Radiologic Pathology", "unlocked": false}];
 const DISCLAIMER = "⚠️ This includes AI-generated reasoning beyond the exact notes and has not been validated by faculty — please double-check against your lecture materials or a lecturer.";
 
-// --- LOGIN GATE ---
-function isCuhkEmail(email){
-  const e = email.trim().toLowerCase();
-  return /^[^\s@]+@([a-z0-9-]+\.)*cuhk\.edu\.hk$/.test(e);
-}
-function tryAutoLogin(){
-  try{
-    const saved = localStorage.getItem('cuhk_login_email');
-    if(saved && isCuhkEmail(saved)){ showApp(saved); }
-  }catch(e){}
-}
-function showApp(email){
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appRoot').classList.add('show');
-  document.getElementById('menuFooter').innerHTML = 'Signed in — ' + email + '<br><button id="logoutBtn">Sign out</button>';
-  document.getElementById('logoutBtn').onclick = ()=>{
-    try{ localStorage.removeItem('cuhk_login_email'); }catch(e){}
-    location.reload();
-  };
-}
-document.getElementById('loginBtn').onclick = ()=>{
-  const email = document.getElementById('loginEmail').value;
-  const err = document.getElementById('loginError');
-  if(!isCuhkEmail(email)){
-    err.textContent = "Please use a CUHK email address (e.g. name@link.cuhk.edu.hk).";
-    return;
-  }
-  err.textContent = '';
-  try{ localStorage.setItem('cuhk_login_email', email.trim()); }catch(e){}
-  showApp(email.trim());
-  renderMenu();
-};
-document.getElementById('loginEmail').addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){ document.getElementById('loginBtn').click(); }
-});
-
+// --- PORTFOLIO DEMO MODE: no account gate ---
 let order = QUESTIONS.map((_,i)=>i);
 let idx = 0;
 let currentFilter = "all";
@@ -678,8 +631,9 @@ chatInput.addEventListener('keydown', (e)=>{
   if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); chatSend.onclick(); }
 });
 
+document.getElementById('appRoot').classList.add('show');
+document.getElementById('menuFooter').textContent = 'Interactive demo · no account required';
 renderMenu();
-tryAutoLogin();
 </script>
 </body>
 </html>
